@@ -119,6 +119,9 @@ WifiConfig::startWifiConfigurator()
   server.on("/fwlink", HTTP_GET, [this](){handleRoot();});
   server.onNotFound([this](){handleNotFound();});
 
+  //Handle live updates
+  server.on("/MODEL", HTTP_GET, [this](){handleModelAngleUpdates();});
+
   server.begin();
   return true;//TODO - look at old stuff and see how it worked
 }
@@ -346,8 +349,8 @@ WifiConfig::handleMaxLevelAngles()
 void
 WifiConfig::handleLevelTrims()
 {
-  const uint32_t pitch = server.arg("pitch").toInt();
-  const uint32_t roll = server.arg("roll").toInt();
+  const float pitch = server.arg("pitch").toFloat();
+  const float roll = server.arg("roll").toFloat();
 
   if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {
@@ -416,4 +419,26 @@ WifiConfig::handleBatteryTrim()
   server.sendHeader("Location", "/main");
   server.send(303);
   m_dataUpdated = true;
+}
+
+
+/**
+* @brief    Decode the new battery scaler
+*/
+void
+WifiConfig::handleModelAngleUpdates()
+{
+  char json[64];
+
+  snprintf(json, sizeof(json),
+            "{\"pitch\":%.1f,\"roll\":%.1f}",
+            *m_pitch, *m_roll);
+
+  if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
+  {
+    Serial.println("Get Angle Updates:");
+    Serial.println(json);
+  }
+
+  server.send(200, "application/json", json);
 }

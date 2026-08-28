@@ -334,7 +334,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease P">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="P" value="%d" min="0" max="200">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="P" value="%d" min="0" max="200">
                     <button type="button" class="plus" aria-label="Increase P">&plus;</button>
                   </div>
                 </div>
@@ -345,7 +345,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease I">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="I" value="%d" min="0" max="500">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="I" value="%d" min="0" max="500">
                     <button type="button" class="plus" aria-label="Increase I">&plus;</button>
                   </div>
                 </div>
@@ -356,7 +356,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease D">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="2000">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="2000">
                     <button type="button" class="plus" aria-label="Increase D">&plus;</button>
                   </div>
                 </div>
@@ -367,7 +367,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease F">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="F" value="%d" min="0" max="50">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="F" value="%d" min="0" max="50">
                     <button type="button" class="plus" aria-label="Increase F">&plus;</button>
                   </div>
                 </div>
@@ -392,7 +392,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease P">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="P" value="%d" min="0" max="200">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="P" value="%d" min="0" max="200">
                     <button type="button" class="plus" aria-label="Increase P">&plus;</button>
                   </div>
                 </div>
@@ -403,7 +403,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease I">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="I" value="%d" min="0" max="500">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="I" value="%d" min="0" max="500">
                     <button type="button" class="plus" aria-label="Increase I">&plus;</button>
                   </div>
                 </div>
@@ -414,7 +414,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease D">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="2000">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="2000">
                     <button type="button" class="plus" aria-label="Increase D">&plus;</button>
                   </div>
                 </div>
@@ -425,7 +425,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease F">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="F" value="%d" min="0" max="50">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="F" value="%d" min="0" max="50">
                     <button type="button" class="plus" aria-label="Increase F">&plus;</button>
                   </div>
                 </div>
@@ -450,7 +450,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease P">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="P" value="%d" min="0" max="200">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="P" value="%d" min="0" max="200">
                     <button type="button" class="plus" aria-label="Increase P">&plus;</button>
                   </div>
                 </div>
@@ -461,7 +461,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease I">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="I" value="%d" min="0" max="500">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="I" value="%d" min="0" max="500">
                     <button type="button" class="plus" aria-label="Increase I">&plus;</button>
                   </div>
                 </div>
@@ -472,7 +472,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease D">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="2000">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="2000">
                     <button type="button" class="plus" aria-label="Increase D">&plus;</button>
                   </div>
                 </div>
@@ -483,7 +483,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease F">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="F" value="%d" min="0" max="50">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="F" value="%d" min="0" max="50">
                     <button type="button" class="plus" aria-label="Increase F">&plus;</button>
                   </div>
                 </div>
@@ -508,7 +508,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Pitch">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="pitch" value="%d" min="0" max="%d">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="pitch" value="%d" min="0" max="%d">
                     <button type="button" class="plus" aria-label="Increase Pitch">&plus;</button>
                   </div>
                 </div>
@@ -519,7 +519,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Roll">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="roll" value="%d" min="0" max="%d">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="roll" value="%d" min="0" max="%d">
                     <button type="button" class="plus" aria-label="Increase Roll">&plus;</button>
                   </div>
                 </div>
@@ -530,7 +530,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Yaw">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="yaw" value="%d" min="0" max="%d">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="yaw" value="%d" min="0" max="%d">
                     <button type="button" class="plus" aria-label="Increase Yaw">&plus;</button>
                   </div>
                 </div>
@@ -555,7 +555,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Pitch">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="pitch" value="%d" min="0" max="90">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="pitch" value="%d" min="0" max="90">
                     <button type="button" class="plus" aria-label="Increase Pitch">&plus;</button>
                   </div>
                 </div>
@@ -566,7 +566,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Roll">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="roll" value="%d" min="0" max="90">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="roll" value="%d" min="0" max="90">
                     <button type="button" class="plus" aria-label="Increase Roll">&plus;</button>
                   </div>
                 </div>
@@ -585,8 +585,10 @@ class Html
           <legend>Levelled Trims</legend>
           <div class="group">
             <div class="gains-grid">
-              <p class="p1">Model currently:<br>pitch: %.1f, roll: %.1f<br>
-                <a href="javascript:window.location.reload();">(CLICK TO REFRESH)</a>
+              <p class="p1">
+                Model currently:<br>
+                pitch: <span id="modelPitch">%.1f</span>,
+                roll: <span id="modelRoll">%.1f</span>
               </p>
               <div class="gain-row">
                 <label>Pitch (degrees)</label>
@@ -594,7 +596,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Pitch">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="pitch" value="%.1f" min="-25.0" max="25.0" step="0.1">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="pitch" value="%.1f" min="-25.0" max="25.0" step="0.1">
                     <button type="button" class="plus" aria-label="Increase Pitch">&plus;</button>
                   </div>
                 </div>
@@ -605,7 +607,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Roll">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="roll" value="%.1f" min="-25.0" max="25.0" step="0.1">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="roll" value="%.1f" min="-25.0" max="25.0" step="0.1">
                     <button type="button" class="plus" aria-label="Increase Roll">&plus;</button>
                   </div>
                 </div>
@@ -630,7 +632,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Servo 1">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="Servo1" value="%d" min="-200" max="200">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="Servo1" value="%d" min="-200" max="200">
                     <button type="button" class="plus" aria-label="Increase Servo 1">&plus;</button>
                   </div>
                 </div>
@@ -641,7 +643,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Servo 2">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="Servo2" value="%d" min="-200" max="200">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="Servo2" value="%d" min="-200" max="200">
                     <button type="button" class="plus" aria-label="Increase Servo 2">&plus;</button>
                   </div>
                 </div>
@@ -652,7 +654,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Servo 3">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="Servo3" value="%d" min="-200" max="200">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="Servo3" value="%d" min="-200" max="200">
                     <button type="button" class="plus" aria-label="Increase Servo 3">&plus;</button>
                   </div>
                 </div>
@@ -663,7 +665,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Servo 4">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="Servo4" value="%d" min="-200" max="200">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="Servo4" value="%d" min="-200" max="200">
                     <button type="button" class="plus" aria-label="Increase Servo 4">&plus;</button>
                   </div>
                 </div>
@@ -691,7 +693,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Voltage Scaler">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="volts" value="%.5f" min="0.0" max="0.05" step="0.00001">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="volts" value="%.5f" min="0.0" max="0.05" step="0.00001">
                     <button type="button" class="plus" aria-label="Increase Voltage Scaler">&plus;</button>
                   </div>
                 </div>
@@ -889,6 +891,53 @@ class Html
         },
         { passive: false }
       );
+
+      async function updateModelAttitude() {
+  try {
+    const response = await fetch("/MODEL");
+
+    if (!response.ok) {
+      throw new Error("HTTP " + response.status);
+    }
+
+    const data = await response.json();
+
+    const pitch = document.getElementById("modelPitch");
+    const roll = document.getElementById("modelRoll");
+
+    // Remember the element that currently has focus
+    const focused = document.activeElement;
+
+    // Remember cursor position if it is an input
+    let selectionStart = null;
+    let selectionEnd = null;
+
+    if (focused && focused.tagName === "INPUT") {
+      selectionStart = focused.selectionStart;
+      selectionEnd = focused.selectionEnd;
+    }
+
+    // Update DOM
+    const newPitch = Number(data.pitch).toFixed(1);
+    const newRoll = Number(data.roll).toFixed(1);
+
+    if (pitch.textContent !== newPitch) {
+      pitch.textContent = newPitch;
+    }
+
+    if (roll.textContent !== newRoll) {
+      roll.textContent = newRoll;
+    }
+
+  } catch (error) {
+    console.error("Failed to update model attitude:", error);
+  }
+}
+
+      // Update immediately, then every second
+      updateModelAttitude();
+      setInterval(updateModelAttitude, 1000);
+
     </script>
   </body>
 </html>)rawliteral";

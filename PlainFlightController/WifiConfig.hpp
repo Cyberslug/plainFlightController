@@ -76,6 +76,8 @@ class WifiConfig : public Html
     void handleServoTrims();
     void handleBatteryTrim();
 
+    void handleModelAngleUpdates();
+
     //Variables
     FileSystem::NonVolatileData* m_webData;
     WifiState m_state = WifiState::START;
