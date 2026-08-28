@@ -684,9 +684,10 @@ class Html
           <legend>Voltage Trim</legend>
           <div class="group">
             <div class="gains-grid">
-              <p class="p1">Calculated: %.2f Volts<br>
-                <a href="javascript:window.location.reload();">(CLICK TO REFRESH)</a>
+              <p class="p1">
+              Calculated: <span id="batteryVolts">%.2f</span> Volts<br>
               </p>
+
               <div class="gain-row">
                 <label>Scaler</label>
                 <div class="container">
@@ -907,6 +908,7 @@ class Html
 
     const pitch = document.getElementById("modelPitch");
     const roll = document.getElementById("modelRoll");
+    const volts = document.getElementById("batteryVolts");
 
     // Remember the element that currently has focus
     const focused = document.activeElement;
@@ -923,6 +925,7 @@ class Html
     // Update DOM
     const newPitch = Number(data.pitch).toFixed(1);
     const newRoll = Number(data.roll).toFixed(1);
+    const newVolts = Number(data.volts).toFixed(2);
 
     if (pitch.textContent !== newPitch) {
       pitch.textContent = newPitch;
@@ -930,6 +933,10 @@ class Html
 
     if (roll.textContent !== newRoll) {
       roll.textContent = newRoll;
+    }
+
+    if (volts.textContent !== newVolts) {
+      volts.textContent = newVolts;
     }
 
   } catch (error) {

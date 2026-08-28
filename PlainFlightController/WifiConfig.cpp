@@ -428,15 +428,15 @@ WifiConfig::handleBatteryTrim()
 void
 WifiConfig::handleModelAngleUpdates()
 {
-  char json[64];
+  char json[96];
 
   snprintf(json, sizeof(json),
-            "{\"pitch\":%.1f,\"roll\":%.1f}",
-            *m_pitch, *m_roll);
+            "{\"pitch\":%.1f,\"roll\":%.1f, \"volts\":%.2f}",
+            *m_pitch, *m_roll, *m_batteryVoltage);
 
   if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {
-    Serial.println("Get Angle Updates:");
+    Serial.println("Get Angle/volts Updates:");
     Serial.println(json);
   }
 
