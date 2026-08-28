@@ -32,7 +32,10 @@
 
 
 
-
+/**
+* @class  WifiConfig
+* @note   Inherits Html class.
+*/
 class WifiConfig : public Html
 {
   public:
@@ -62,11 +65,9 @@ class WifiConfig : public Html
     //Methods
     void updateGains(PIDF::Gains* const theGains);
     void sendMain();
-    void handleRates(); 
-    void handleTrims();
     void handleRoot();
     void handleNotFound();
-
+    //Forms methods
     void handlePitchGains();
     void handleRollGains();
     void handleYawGains();
@@ -75,8 +76,8 @@ class WifiConfig : public Html
     void handleLevelTrims();
     void handleServoTrims();
     void handleBatteryTrim();
-
-    void handleModelAngleUpdates();
+    //Methods for handling live updates
+    void handleModelUpdates();
 
     //Variables
     FileSystem::NonVolatileData* m_webData;

@@ -120,7 +120,7 @@ WifiConfig::startWifiConfigurator()
   server.onNotFound([this](){handleNotFound();});
 
   //Handle live updates
-  server.on("/MODEL", HTTP_GET, [this](){handleModelAngleUpdates();});
+  server.on("/MODEL", HTTP_GET, [this](){handleModelUpdates();});
 
   server.begin();
   return true;//TODO - look at old stuff and see how it worked
@@ -187,7 +187,6 @@ WifiConfig::sendMain()
 
   if (HTML_DOC_BUFF_SIZE < (n+1))
   {
-    //TODO error !!
     Serial.println("snprintf buff size error !");
   }
   else
@@ -423,22 +422,31 @@ WifiConfig::handleBatteryTrim()
 
 
 /**
-* @brief    Decode the new battery scaler
+* @brief    Process and send live updates.
 */
 void
-WifiConfig::handleModelAngleUpdates()
+WifiConfig::handleModelUpdates()
 {
-  char json[96];
+  constexpr uint8_t BUFF_SIZE = 96U;
+  char json[BUFF_SIZE] = {0};
 
-  snprintf(json, sizeof(json),
+  const int32_t n = snprintf(
+            json, sizeof(json),
             "{\"pitch\":%.1f,\"roll\":%.1f, \"volts\":%.2f}",
             *m_pitch, *m_roll, *m_batteryVoltage);
 
   if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {
-    Serial.println("Get Angle/volts Updates:");
+    Serial.println("Get angle/volts Updates:");
     Serial.println(json);
   }
 
-  server.send(200, "application/json", json);
+  if (BUFF_SIZE < (n+1))
+  {
+    Serial.println("snprintf buff size error !");
+  }
+  else
+  {
+    server.send(200, "application/json", json);
+  }
 }
