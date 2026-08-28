@@ -178,12 +178,19 @@ WifiConfig::sendMain()
                           m_webData->gains.yaw.p, m_webData->gains.yaw.i, m_webData->gains.yaw.d, m_webData->gains.yaw.ff,
                           (m_webData->rates.pitch/100), degreesPerSec, (m_webData->rates.roll/100), degreesPerSec, (m_webData->rates.yaw/100), degreesPerSec, 
                           (m_webData->maxAngle.pitch/100), (m_webData->maxAngle.roll/100), 
-                          *m_pitch, *m_roll, *m_yaw, m_webData->levelTrim.pitch, m_webData->levelTrim.roll, m_webData->levelTrim.yaw, 
+                          *m_pitch, *m_roll, m_webData->levelTrim.pitch, m_webData->levelTrim.roll, 
                           m_webData->servoTrim.servo1, m_webData->servoTrim.servo2, m_webData->servoTrim.servo3, m_webData->servoTrim.servo4,
                           *m_batteryVoltage, m_webData->batteryScaler);
-//TODO n? - look at old stuff and see how it worked
 
-  server.send(200, "text/html", m_html);
+  if (HTML_DOC_BUFF_SIZE < (n+1))
+  {
+    //TODO error !!
+    Serial.println("snprintf buff size error !");
+  }
+  else
+  {
+    server.send(200, "text/html", m_html);
+  }
 }
     
 

@@ -585,7 +585,7 @@ class Html
           <legend>Levelled Trims</legend>
           <div class="group">
             <div class="gains-grid">
-              <p class="p1">Model current:<br>pitch: %.1f, roll: %.1f, yaw: %.1f<br>
+              <p class="p1">Model currently:<br>pitch: %.1f, roll: %.1f<br>
                 <a href="javascript:window.location.reload();">(CLICK TO REFRESH)</a>
               </p>
               <div class="gain-row">
@@ -607,17 +607,6 @@ class Html
                     <button type="button" class="minus" aria-label="Decrease Roll">&minus;</button>
                     <input class="input-box" type="text" inputmode="decimal" lang="en" name="roll" value="%.1f" min="-25.0" max="25.0" step="0.1">
                     <button type="button" class="plus" aria-label="Increase Roll">&plus;</button>
-                  </div>
-                </div>
-              </div>
-              <div class="gain-row">
-                <label>Yaw (degrees)</label>
-                <div class="container">
-                  <div class="info"></div>
-                  <div class="quantity">
-                    <button type="button" class="minus" aria-label="Decrease Yaw">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="yaw" value="%.1f" min="-25.0" max="25.0" step="0.1">
-                    <button type="button" class="plus" aria-label="Increase Yaw">&plus;</button>
                   </div>
                 </div>
               </div>
