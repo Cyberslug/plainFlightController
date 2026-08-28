@@ -24,14 +24,13 @@
 #pragma once
 
 #include <WiFi.h>
-#include <WiFiClient.h>
-#include <WiFiAP.h>
+#include <WebServer.h>
+#include <DNSServer.h>
 #include "Html.hpp"
 #include "FileSystem.hpp"
 #include "Config.hpp"
 
 
-//using namespace Configuration;
 
 
 class WifiConfig : public Html
@@ -45,20 +44,6 @@ class WifiConfig : public Html
     bool hasUpdatedData();
 
   private:
-    //Delimiter data type used to determine delimiter position in received web form data.
-    struct Delimiter
-      {
-        uint32_t item[10];
-        uint32_t count;
-      };
-
-    //Data type used in decoding web form data.
-    struct StringHandler
-    {
-      Delimiter delimiter;
-      String tokens[10];
-      String message;
-    };
 
     enum class WifiState : uint32_t
     {
@@ -68,29 +53,28 @@ class WifiConfig : public Html
       SERV_CLIENT
     };
 
-    //HTML string headers received from the web application upon a web form save
-    String STR_PITCH       = "GET /PITCH?";
-    String STR_ROLL        = "GET /ROLL?";
-    String STR_YAW         = "GET /YAW?";
-    String STR_RATES       = "GET /RATES?";
-    String STR_ANGLES      = "GET /ANGLE?";
-    String STR_LEVEL_TRIMS = "GET /LEVEL_TRIMS?";
-    String STR_SERVO_TRIMS = "GET /SERVO_TRIMS?";    
-    String STR_VOLT_TRIM   = "GET /VOLT_TRIM?";
     // Set these to your desired credentials.
     static constexpr char SSID[] = "PlainFlight";
     static constexpr char PASSWORD[] = "12345678";
-    static constexpr uint32_t HTML_DOC_BUFF_SIZE = sizeof(INDEX_HTML);
+    static constexpr uint32_t HTML_VARIABLES_SIZE = 200U;
+    static constexpr uint32_t HTML_DOC_BUFF_SIZE = sizeof(INDEX_HTML) + HTML_VARIABLES_SIZE;
 
     //Methods
-    void removeHeadTail(StringHandler* const str, uint32_t headerLength);
-    void sendHtml(WiFiClient* const theClient);
-    bool updatePidf(StringHandler* const str, PIDF::Gains* const theGains);
-    bool updateRates(StringHandler* const str);
-    bool updateLevelTrims(StringHandler* const str);
-    bool updateServoTrims(StringHandler* const str);
-    bool updateMaxAngles(StringHandler* const str);
-    bool updateBatteryTrims(StringHandler* const str);
+    void updateGains(PIDF::Gains* const theGains);
+    void sendMain();
+    void handleRates(); 
+    void handleTrims();
+    void handleRoot();
+    void handleNotFound();
+
+    void handlePitchGains();
+    void handleRollGains();
+    void handleYawGains();
+    void handleDegreeRates();
+    void handleMaxLevelAngles();
+    void handleLevelTrims();
+    void handleServoTrims();
+    void handleBatteryTrim();
 
     //Variables
     FileSystem::NonVolatileData* m_webData;
@@ -104,6 +88,6 @@ class WifiConfig : public Html
     float* m_yaw;
 
     //Objects
-    WiFiServer server = WiFiServer(80);
-    WiFiClient client;
+    DNSServer dnsServer;
+    WebServer server = WebServer(80);
 };

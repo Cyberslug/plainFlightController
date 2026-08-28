@@ -70,7 +70,9 @@ WifiConfig::doWiFiStateMachine()
     
     case WifiState::SERV_CLIENT:
     {
-      serviceWifiConfigurator();
+      //serviceWifiConfigurator();
+      dnsServer.processNextRequest();
+      server.handleClient();
       break;  
     } 
   }
@@ -91,27 +93,34 @@ WifiConfig::startWifiConfigurator()
   IPAddress m_subnet(255,255,255,0);
 
   WiFi.softAPConfig(m_localIP, m_gateway, m_subnet);
+  WiFi.softAP(SSID, PASSWORD);
+  m_localIP = WiFi.softAPIP();
+  dnsServer.start(53, "*", m_localIP);
 
-  // You can remove the password parameter if you want the AP to be open.
-  // a valid password must have more than 7 characters
-  if (!WiFi.softAP(SSID, PASSWORD)) 
-  {
-    if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println("Soft AP creation failed.");}
-    return false;
-  }
-  else
-  {
-    IPAddress myIP = WiFi.softAPIP();
-    if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
-    {
-      Serial.print("AP IP address: ");
-      Serial.println(myIP);
-    }
-    
-    server.begin();
-    if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println("Server started");}    
-    return true;
-  }
+  //Pages
+  server.on("/", HTTP_GET, [this](){handleRoot();});
+  server.on("/main", HTTP_GET, [this](){sendMain();});
+  
+  //Forms
+  server.on("/PITCH", HTTP_POST, [this](){handlePitchGains();});
+  server.on("/ROLL", HTTP_POST, [this](){handleRollGains();});
+  server.on("/YAW", HTTP_POST, [this](){handleYawGains();});
+  server.on("/RATES", HTTP_POST, [this](){handleDegreeRates();});
+  server.on("/ANGLE", HTTP_POST, [this](){handleMaxLevelAngles();});
+  server.on("/LEVEL_TRIMS", HTTP_POST, [this](){handleLevelTrims();});
+  server.on("/SERVO_TRIMS", HTTP_POST, [this](){handleServoTrims();});
+  server.on("/VOLT_TRIM", HTTP_POST, [this](){handleBatteryTrim();});
+
+  //Captive portal detection
+  server.on("/generate_204", HTTP_GET, [this](){handleRoot();});
+  server.on("/hotspot-detect.html", HTTP_GET, [this](){handleRoot();});
+  server.on("/connecttest.txt", HTTP_GET, [this](){handleRoot();});
+  server.on("/ncsi.txt", HTTP_GET, [this](){handleRoot();});
+  server.on("/fwlink", HTTP_GET, [this](){handleRoot();});
+  server.onNotFound([this](){handleNotFound();});
+
+  server.begin();
+  return true;//TODO - look at old stuff and see how it worked
 }
 
 
@@ -122,7 +131,6 @@ WifiConfig::startWifiConfigurator()
 void 
 WifiConfig::stopWifiConfigurator() 
 {
-  client.stop();
   if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println("Client Disconnected.");}
   WiFi.softAPdisconnect();
   WiFi.mode(WIFI_OFF);
@@ -131,214 +139,36 @@ WifiConfig::stopWifiConfigurator()
 
 
 /**
-* @brief  Main wifi routine that handles client connection and HTML traffic.
-* @note   Probably better ways of doing this but wanted to avoid unreliable 3rd party libraries.
+* @brief  Informs caller when new data has been captured.
+* @return true when a value has been updated.
 */
-void 
-WifiConfig::serviceWifiConfigurator()//FileSystem::NonVolatileData * const fileData) 
+bool 
+WifiConfig::hasUpdatedData()
 {
-  if (!client)
-  {
-    client = server.accept();   // listen for incoming clients
-    m_currentLine = "";
-  }
-  else 
-  { 
-    // if you get a client,
-    if (client.connected()) 
-    {           
-      // loop while the client's connected
-      if (client.available()) 
-      {         
-        // if there's bytes to read from the client        
-        char c = client.read();             // read a byte, then
-  
-        if (c == '\n')
-        {                    
-          // if the byte is a newline character
-          // if the current line is blank, you got two newline characters in a row.
-          // that's the end of the client HTTP request, so send a response:
-          if (m_currentLine.length() == 0) 
-          {
-            // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
-            // and a content-type so the client knows what's coming, then a blank line:
-            if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println("Send HTML doc.");}
-            sendHtml(&client);
-            // The HTTP response ends with another blank line:
-            client.println();
-            client.stop();
-            if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println("Client Disconnected.");}
-          }          
-          else 
-          {     
-            StringHandler strData = {0}; 
-            // if you got a newline, then clear currentLine:
-            if (m_currentLine.startsWith(STR_PITCH))
-            {       
-              strData.message = m_currentLine;
-              if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println("Received pitch PID.");}
-              removeHeadTail(&strData, STR_PITCH.length());
-              if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(strData.message);}
-
-              if (updatePidf(&strData, &m_webData->gains.pitch))
-              {
-                m_dataUpdated = true;
-              }
-            }
-            else if (m_currentLine.startsWith(STR_ROLL))
-            {
-              strData.message = m_currentLine;
-              if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println("Received roll PID.");}
-              removeHeadTail(&strData, STR_ROLL.length());
-              if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(strData.message);}
-
-              if (updatePidf(&strData, &m_webData->gains.roll))
-              {
-                m_dataUpdated = true;
-              }
-            }
-            else if (m_currentLine.startsWith(STR_YAW))
-            {
-              strData.message = m_currentLine;
-              if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println("Received Yaw PID.");}
-              removeHeadTail(&strData, STR_YAW.length());
-              if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(strData.message);}
-
-              if (updatePidf(&strData, &m_webData->gains.yaw))
-              {
-                m_dataUpdated = true;
-              }
-            }
-            else if (m_currentLine.startsWith(STR_RATES))
-            {
-              strData.message = m_currentLine;
-              if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println("Received Rates.");}
-              removeHeadTail(&strData, STR_RATES.length());
-              if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(strData.message);}
-
-              if (updateRates(&strData))
-              {
-                m_dataUpdated = true;
-              }
-            }
-            else if (m_currentLine.startsWith(STR_ANGLES))
-            {
-              strData.message = m_currentLine;
-              if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println("Received max angles PID.");}
-              removeHeadTail(&strData, STR_ANGLES.length());
-              if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(strData.message);}
- 
-              if (updateMaxAngles(&strData))
-              {
-                m_dataUpdated = true;
-              }
-            }
-            else if (m_currentLine.startsWith(STR_LEVEL_TRIMS))
-            {
-              strData.message = m_currentLine;
-              if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println("Received level trims.");}
-              removeHeadTail(&strData, STR_LEVEL_TRIMS.length());
-              if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(strData.message);}
-
-              if (updateLevelTrims(&strData))
-              {
-                m_dataUpdated = true;
-              }
-            } 
-            else if (m_currentLine.startsWith(STR_SERVO_TRIMS))
-            {
-              strData.message = m_currentLine;
-              if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println("Received level trims.");}
-              removeHeadTail(&strData, STR_SERVO_TRIMS.length());
-              if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(strData.message);}
-
-              if (updateServoTrims(&strData))
-              {
-                m_dataUpdated = true;
-              }
-            } 
-            else if (m_currentLine.startsWith(STR_VOLT_TRIM))
-            {
-              strData.message = m_currentLine;
-              if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println("Received battery.");}
-              removeHeadTail(&strData, STR_VOLT_TRIM.length());
-              if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(strData.message);}
-
-              if (updateBatteryTrims(&strData))
-              {
-                m_dataUpdated = true;
-              }
-            }       
-            
-            m_currentLine = "";
-          }          
-        } 
-        else if (c != '\r') 
-        {  // if you got anything else but a carriage return character,
-          m_currentLine += c;      // add it to the end of the currentLine
-        }        
-      }
-    }
-  }
+  const bool updated = m_dataUpdated;
+  m_dataUpdated = false;
+  return updated;
 }
 
 
 /**
-* @brief    Remove HTML fomatting from client string to get data that we are interested in.
-* @param    str The received string to trim, header length to remove.
-* @param    headerLength The length of header.
+* @brief    Send the main HTML page.
 */
-void 
-WifiConfig::removeHeadTail(StringHandler* const str, uint32_t headerLength)
+void
+WifiConfig::sendMain()
 {
-  int32_t idx;
-
-  str->message.remove(0, headerLength);
-  //Find " HTTP/1.1"
-  for (uint32_t i=0; i<str->message.length(); i++)
-  {
-    if(str->message.charAt(i) == ' ')
-    {
-      idx = i;
-      break;
-    }
-  }
-  //Remove " HTTP/1.1"
-  str->message.remove(idx, str->message.length());
-  //Find all '&' characters
-  str->delimiter.count = 0U;
-
-  for (int32_t i=0; i<str->message.length(); i++)
-  {
-    if(str->message.charAt(i) == '&')
-    {
-      str->delimiter.item[str->delimiter.count] = i;
-      str->delimiter.count++;
-    }    
-  }
-
-  //Add string length to indicate EOM as a delimeter
-  str->delimiter.item[str->delimiter.count] = str->message.length();
-}
-
-
-/**
-* @brief  Sends HTML webpage to the client.
-* @param  theClient Connected client to send data to, system data to export to client.
-*/
-void 
-WifiConfig::sendHtml(WiFiClient* const theClient)
-{  
   int32_t degreesPerSec = 0;
 
   if constexpr(Config::GYRO_RATE == GyroRate::IS_250_DEGS_SECOND)
   {
     degreesPerSec = 250;
   }
-
-  if constexpr(Config::GYRO_RATE == GyroRate::IS_500_DEGS_SECOND)
+  else
   {
-    degreesPerSec = 500;
+    if constexpr(Config::GYRO_RATE == GyroRate::IS_500_DEGS_SECOND)
+    {
+      degreesPerSec = 500;
+    }
   }
 
   const int32_t n = snprintf (m_html, HTML_DOC_BUFF_SIZE, INDEX_HTML, 
@@ -351,291 +181,232 @@ WifiConfig::sendHtml(WiFiClient* const theClient)
                           *m_pitch, *m_roll, *m_yaw, m_webData->levelTrim.pitch, m_webData->levelTrim.roll, m_webData->levelTrim.yaw, 
                           m_webData->servoTrim.servo1, m_webData->servoTrim.servo2, m_webData->servoTrim.servo3, m_webData->servoTrim.servo4,
                           *m_batteryVoltage, m_webData->batteryScaler);
-  
-  // Send headers
-  theClient->println("HTTP/1.1 200 OK");
-  theClient->println("Content-Type: text/html; charset=utf-8");
-  theClient->println("Connection: close");
-  theClient->println(); // blank line = end of headers
+//TODO n? - look at old stuff and see how it worked
 
-  // Send body
-  theClient->print(m_html);
+  server.send(200, "text/html", m_html);
+}
+    
+
+/**
+* @brief    Handle root.
+*/
+void
+WifiConfig::handleRoot()
+{
+  Serial.println("handle root");
+
+  server.sendHeader("Location", "http://192.168.4.1/main", true);
+  server.send(302, "text/plain", "");
 }
 
 
 /**
-* @brief  Updates PIDF parameters.
-* @param  str String containing data which to decode.
-* @param  theGains  Pitch, roll or yaw gains.
-* @return true when a value has been updated.
+* @brief    Handle web requests that are not known.
 */
-bool 
-WifiConfig::updatePidf(StringHandler* const str, PIDF::Gains* const theGains)
+void
+WifiConfig::handleNotFound()
 {
-  bool updated = false;
+  Serial.println("handle not found");
 
-  for(int32_t i=0, j=0; i<=str->delimiter.count; i++)
+  server.sendHeader("Location", "http://192.168.4.1/main", true);
+  server.send(302, "text/plain", "");
+}
+
+
+/**
+* @brief    Common decoding method for all PIDF gains.
+* @param    Pointer to gains structure to populate.
+*/
+void
+WifiConfig::updateGains(PIDF::Gains* const theGains)
+{
+  const uint32_t P = server.arg("P").toInt();
+  const uint32_t I = server.arg("I").toInt();
+  const uint32_t D = server.arg("D").toInt();
+  const uint32_t F = server.arg("F").toInt();
+
+  if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {
-    str->tokens[i] = str->message.substring(j, str->delimiter.item[i]);
-     j = str->delimiter.item[i] + 1;
-
-    if(str->tokens[i].startsWith("P="))
-    {    
-      str->tokens[i].remove(0,2);
-      theGains->p = str->tokens[i].toInt();
-      if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(theGains->p);}
-      updated = true;
-    }
-    else if(str->tokens[i].startsWith("I="))
-    {    
-      str->tokens[i].remove(0,2);
-      theGains->i = str->tokens[i].toInt();
-      if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(theGains->i);}
-      updated = true;
-    }
-    else if(str->tokens[i].startsWith("D="))
-    {    
-      str->tokens[i].remove(0,2);
-      theGains->d = str->tokens[i].toInt();
-      if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(theGains->d);}
-      updated = true;
-    }
-    else if(str->tokens[i].startsWith("F="))
-    {    
-      str->tokens[i].remove(0,2);
-      theGains->ff = str->tokens[i].toInt();
-      if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(theGains->ff);}
-      updated = true;
-    }
-    else
-    {
-      ;
-    }
+    Serial.println("Gains updated:");
+    Serial.println("P:" + String(P));
+    Serial.println("I:" + String(I));
+    Serial.println("D:" + String(D));
+    Serial.println("F:" + String(F));
   }
 
-  return updated;
+  theGains->p = P;
+  theGains->i = I;
+  theGains->d = D;
+  theGains->ff = F;
 }
 
 
 /**
-* @brief  Updates rate parameters.
-* @param  str String containing data which to decode.
-* @return true when a value has been updated.
+* @brief    Decode the pitch gains.
 */
-bool 
-WifiConfig::updateRates(StringHandler* const str)
+void
+WifiConfig::handlePitchGains()
 {
-  bool updated = true;
+  updateGains(&m_webData->gains.pitch);
+  server.sendHeader("Location", "/main");
+  server.send(303);
+  m_dataUpdated = true;
+}
 
-  for(int32_t i=0, j=0; i<=str->delimiter.count; i++)
+
+/**
+* @brief    Decode the roll gains.
+*/
+void
+WifiConfig::handleRollGains()
+{
+  updateGains(&m_webData->gains.roll);
+  server.sendHeader("Location", "/main");
+  server.send(303);
+  m_dataUpdated = true;
+}
+
+
+/**
+* @brief    Decode the yaw gains.
+*/
+void
+WifiConfig::handleYawGains()
+{
+  updateGains(&m_webData->gains.yaw);
+  server.sendHeader("Location", "/main");
+  server.send(303);
+  m_dataUpdated = true;
+}
+
+
+/**
+* @brief    Decode the degrees pers second rates
+*/
+void
+WifiConfig::handleDegreeRates()
+{
+  const uint32_t pitch = static_cast<uint32_t>(server.arg("pitch").toInt() * 100);
+  const uint32_t roll = static_cast<uint32_t>(server.arg("roll").toInt() * 100);
+  const uint32_t yaw = static_cast<uint32_t>(server.arg("yaw").toInt() * 100);
+
+  if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {
-    str->tokens[i] = str->message.substring(j, str->delimiter.item[i]);
-     j = str->delimiter.item[i] + 1;
-
-    if(str->tokens[i].startsWith("pitch="))
-    {    
-      str->tokens[i].remove(0,6);
-      m_webData->rates.pitch = str->tokens[i].toInt() * 100;
-      if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(m_webData->rates.pitch);}
-      updated = true;
-    }
-    else if(str->tokens[i].startsWith("roll="))
-    {    
-      str->tokens[i].remove(0,5);
-      m_webData->rates.roll = str->tokens[i].toInt() * 100;
-      if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(m_webData->rates.roll);}
-      updated = true;
-    }
-    else if(str->tokens[i].startsWith("yaw="))
-    {    
-      str->tokens[i].remove(0,4);
-      m_webData->rates.yaw = str->tokens[i].toInt() * 100;
-      if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(m_webData->rates.yaw);}
-      updated = true;
-    }
-    else
-    {
-      ;
-    }
+    Serial.println("Degree rates updated:");
+    Serial.println("Pitch:" + String(pitch));
+    Serial.println("Roll:" + String(roll));
+    Serial.println("Yaw:" + String(yaw));
   }
 
-  return updated;
+  m_webData->rates.pitch = pitch;
+  m_webData->rates.roll = roll;
+  m_webData->rates.yaw = yaw;
+
+  server.sendHeader("Location", "/main");
+  server.send(303);
+  m_dataUpdated = true;
 }
 
 
 /**
-* @brief  Updates level mode trims parameters.
-* @param  str String containing data which to decode.
-* @return true when a value has been updated.
+* @brief    Decode the max angle trims
 */
-bool 
-WifiConfig::updateLevelTrims(StringHandler* const str)
+void
+WifiConfig::handleMaxLevelAngles()
 {
-  bool updated = false;
+  const uint32_t pitch = static_cast<uint32_t>(server.arg("pitch").toInt() * 100);
+  const uint32_t roll = static_cast<uint32_t>(server.arg("roll").toInt() * 100);
 
-  for(int32_t i=0, j=0; i<=str->delimiter.count; i++)
+  if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {
-    str->tokens[i] = str->message.substring(j, str->delimiter.item[i]);
-     j = str->delimiter.item[i] + 1;
-
-    if(str->tokens[i].startsWith("pitch="))
-    {    
-      str->tokens[i].remove(0,6);
-      m_webData->levelTrim.pitch = str->tokens[i].toFloat();
-      if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(m_webData->levelTrim.pitch);}
-      updated = true;
-    }
-    else if(str->tokens[i].startsWith("roll="))
-    {    
-      str->tokens[i].remove(0,5);
-      m_webData->levelTrim.roll = str->tokens[i].toFloat();
-      if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(m_webData->levelTrim.roll);}
-      updated = true;
-    }
-    else
-    {
-      if(str->tokens[i].startsWith("yaw="))
-      {    
-        str->tokens[i].remove(0,4);
-        m_webData->levelTrim.yaw = str->tokens[i].toFloat();
-        if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(m_webData->levelTrim.yaw);}
-        updated = true;
-      }
-    }
+    Serial.println("Level rates updated:");
+    Serial.println("Pitch:" + String(pitch));
+    Serial.println("Roll:" + String(roll));
   }
 
-  return updated;
+  m_webData->maxAngle.pitch = pitch;
+  m_webData->maxAngle.roll = roll;
+
+  server.sendHeader("Location", "/main");
+  server.send(303);
+  m_dataUpdated = true;
 }
 
 
 /**
-* @brief  Updates max bank angles for levelled mode parameters.
-* @param  str String containing data which to decode.
-* @return true when a value has been updated.
+* @brief    Decode the new level trims
 */
-bool 
-WifiConfig::updateMaxAngles(StringHandler* const str)
+void
+WifiConfig::handleLevelTrims()
 {
-  bool updated = false;
+  const uint32_t pitch = server.arg("pitch").toInt();
+  const uint32_t roll = server.arg("roll").toInt();
 
-  for(int32_t i=0, j=0; i<=str->delimiter.count; i++)
+  if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {
-    str->tokens[i] = str->message.substring(j, str->delimiter.item[i]);
-     j = str->delimiter.item[i] + 1;
-
-    if(str->tokens[i].startsWith("pitch="))
-    {    
-      str->tokens[i].remove(0,6);
-      m_webData->maxAngle.pitch = str->tokens[i].toInt() * 100;
-      if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(m_webData->maxAngle.pitch);}
-      updated = true;
-    }
-    else if(str->tokens[i].startsWith("roll="))
-    {    
-      str->tokens[i].remove(0,5);
-      m_webData->maxAngle.roll = str->tokens[i].toInt() * 100;
-      if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(m_webData->maxAngle.roll);}
-      updated = true;
-    }
-    else
-    {
-      ;
-    }
+    Serial.println("Level trims updated:");
+    Serial.println("Pitch:" + String(pitch));
+    Serial.println("Roll:" + String(roll));
   }
 
-  return updated;
+  m_webData->levelTrim.pitch = pitch;
+  m_webData->levelTrim.roll = roll;
+
+  server.sendHeader("Location", "/main");
+  server.send(303);
+  m_dataUpdated = true;
 }
 
 
 /**
-* @brief  Updates servo trim parameters.
-* @param  str String containing data which to decode.
-* @return true when a value has been updated.
+* @brief    Decode the new servo trims
 */
-bool 
-WifiConfig::updateServoTrims(StringHandler* const str)
+void
+WifiConfig::handleServoTrims()
 {
-  bool updated = false;
+  const int32_t servo1 = server.arg("Servo1").toInt();
+  const int32_t servo2 = server.arg("Servo2").toInt();
+  const int32_t servo3 = server.arg("Servo3").toInt();
+  const int32_t servo4 = server.arg("Servo4").toInt();
 
-  for(int32_t i=0, j=0; i<=str->delimiter.count; i++)
+  if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {
-    str->tokens[i] = str->message.substring(j, str->delimiter.item[i]);
-     j = str->delimiter.item[i] + 1;
-
-    if(str->tokens[i].startsWith("Servo1="))
-    {    
-      str->tokens[i].remove(0,7);
-      m_webData->servoTrim.servo1 = str->tokens[i].toInt();
-      if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(m_webData->servoTrim.servo1);}
-      updated = true;
-    }
-    else if(str->tokens[i].startsWith("Servo2="))
-    {    
-      str->tokens[i].remove(0,7);
-      m_webData->servoTrim.servo2 = str->tokens[i].toInt();
-      if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(m_webData->servoTrim.servo2);}
-      updated = true;
-    }
-    else if(str->tokens[i].startsWith("Servo3="))
-    {    
-      str->tokens[i].remove(0,7);
-      m_webData->servoTrim.servo3 = str->tokens[i].toInt();
-      if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(m_webData->servoTrim.servo3);}
-      updated = true;
-    }
-    else if(str->tokens[i].startsWith("Servo4="))
-    {    
-      str->tokens[i].remove(0,7);
-      m_webData->servoTrim.servo4 = str->tokens[i].toInt();
-      if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(m_webData->servoTrim.servo4);}
-      updated = true;
-    }
-    else
-    {
-      ;
-    }
+    Serial.println("Servo trims updated:");
+    Serial.println("servo1:" + String(servo1));
+    Serial.println("servo2:" + String(servo2));
+    Serial.println("servo3:" + String(servo3));
+    Serial.println("servo4:" + String(servo4));
   }
 
-  return updated;
+  m_webData->servoTrim.servo1 = servo1;
+  m_webData->servoTrim.servo2 = servo2;
+  m_webData->servoTrim.servo3 = servo3;
+  m_webData->servoTrim.servo4 = servo4;
+
+  server.sendHeader("Location", "/main");
+  server.send(303);
+  m_dataUpdated = true;
 }
 
 
 /**
-* @brief  Updates battery scaler parameter.
-* @param  str String containing data which to decode.
-* @return true when a value has been updated.
+* @brief    Decode the new battery scaler
 */
-bool 
-WifiConfig::updateBatteryTrims(StringHandler* const str)//, float* const batteryTrim)
+void
+WifiConfig::handleBatteryTrim()
 {
-  bool updated = false;
+  const float voltCalibration = server.arg("volts").toFloat();
 
-  for(int32_t i=0, j=0; i<=str->delimiter.count; i++)
+  if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {
-    str->tokens[i] = str->message.substring(j, str->delimiter.item[i]);
-     j = str->delimiter.item[i] + 1;
-
-    if(str->tokens[i].startsWith("volts="))
-    { 
-      str->tokens[i].remove(0,6);
-      m_webData->batteryScaler = str->tokens[i].toFloat();
-      if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println(m_webData->batteryScaler, 5);}
-      updated = true;
-    }
+    Serial.println("Voltage calibration updated:");
+    Serial.print("Cal:");
+    Serial.println(voltCalibration, 5);
   }
 
-  return updated;
-}
+  m_webData->batteryScaler = voltCalibration;
 
-
-/**
-* @brief  Informs caller when new data has been captured.
-* @return true when a value has been updated.
-*/
-bool 
-WifiConfig::hasUpdatedData()
-{
-  bool updated = m_dataUpdated;
-  m_dataUpdated = false;
-  return updated;
+  server.sendHeader("Location", "/main");
+  server.send(303);
+  m_dataUpdated = true;
 }

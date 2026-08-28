@@ -323,7 +323,7 @@ class Html
       <h1>PlainFlight&#8203;Controller %s<br>Configurator</h1>
       <p class="warning">For Safety Remove Propellers.</p>
 
-      <form action="/PITCH" method="get">
+      <form action="/PITCH" method="POST">
         <fieldset>
           <legend>Pitch Gains</legend>
           <div class="group">
@@ -381,7 +381,7 @@ class Html
         </fieldset>
       </form>
 
-      <form action="/ROLL" method="get">
+      <form action="/ROLL" method="POST">
         <fieldset>
           <legend>Roll Gains</legend>
           <div class="group">
@@ -439,7 +439,7 @@ class Html
         </fieldset>
       </form>
 
-      <form action="/YAW" method="get">
+      <form action="/YAW" method="POST">
         <fieldset>
           <legend>Yaw Gains</legend>
           <div class="group">
@@ -497,7 +497,7 @@ class Html
         </fieldset>
       </form>
 
-      <form action="/RATES" method="get">
+      <form action="/RATES" method="POST">
         <fieldset>
           <legend>Rates</legend>
           <div class="group">
@@ -544,7 +544,7 @@ class Html
         </fieldset>
       </form>
 
-      <form action="/ANGLE" method="get">
+      <form action="/ANGLE" method="POST">
         <fieldset>
           <legend>Max Self Levelled Angles</legend>
           <div class="group">
@@ -580,7 +580,7 @@ class Html
         </fieldset>
       </form>
 
-      <form action="/LEVEL_TRIMS" method="get">
+      <form action="/LEVEL_TRIMS" method="POST">
         <fieldset>
           <legend>Levelled Trims</legend>
           <div class="group">
@@ -630,7 +630,7 @@ class Html
         </fieldset>
       </form>
 
-      <form action="/SERVO_TRIMS" method="get">
+      <form action="/SERVO_TRIMS" method="POST">
         <fieldset>
           <legend>Servo Trims</legend>
           <div class="group">
@@ -688,7 +688,7 @@ class Html
         </fieldset>
       </form>
 
-      <form action="/VOLT_TRIM" method="get">
+      <form action="/VOLT_TRIM" method="POST">
         <fieldset>
           <legend>Voltage Trim</legend>
           <div class="group">
