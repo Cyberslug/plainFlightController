@@ -586,9 +586,9 @@ class Html
           <div class="group">
             <div class="gains-grid">
               <p class="p1">
-                Model currently:<br>
-                pitch: <span id="modelPitch">%.1f</span>,
-                roll: <span id="modelRoll">%.1f</span>
+                Current: 
+                pitch <span id="modelPitch">%.1f</span>&deg;,
+                roll <span id="modelRoll">%.1f</span>&deg;
               </p>
               <div class="gain-row">
                 <label>Pitch (degrees)</label>
@@ -739,6 +739,9 @@ class Html
             e.preventDefault();
             return;
           }
+
+          sessionStorage.setItem("scrollY", window.scrollY);
+
           fieldset.querySelectorAll(".input-box").forEach((i) => {
             i.value = i.value.replace(",", "."); // Ensure dot as decimal separator
           });
@@ -933,6 +936,17 @@ class Html
     console.error("Failed to update model attitude:", error);
   }
 }
+
+    window.addEventListener("load", () => {
+
+        const y = sessionStorage.getItem("scrollY");
+
+        if (y !== null) {
+            window.scrollTo(0, parseInt(y));
+            sessionStorage.removeItem("scrollY");
+        }
+
+    });
 
       // Update immediately, then every second
       updateModelAttitude();
