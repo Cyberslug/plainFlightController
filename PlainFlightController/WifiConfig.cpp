@@ -93,8 +93,15 @@ WifiConfig::startWifiConfigurator()
   IPAddress m_subnet(255,255,255,0);
 
   WiFi.softAPConfig(m_localIP, m_gateway, m_subnet);
-  WiFi.softAP(SSID, PASSWORD);
+
+  if (!WiFi.softAP(SSID, PASSWORD))
+  {
+    if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println("Soft AP failed.");}
+    return false;
+  }
+
   m_localIP = WiFi.softAPIP();
+  //Using dns to create a captive portal in an effort to automatically open a webpage.
   dnsServer.start(53, "*", m_localIP);
 
   //Pages
