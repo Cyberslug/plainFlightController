@@ -259,32 +259,6 @@ class Html
         transform: translateX(-50) translateY(0);
       }
 
-      .save-btn {
-        margin-top: 0;
-        margin-bottom: 0;
-        width: 150px;
-        height: 45px;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        font-weight: bold;
-        color: #fff;
-        background-color: #bbb;
-        cursor: not-allowed;
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-      }
-
-      .save-btn.active {
-        background-color: #007bff;
-        cursor: pointer;
-      }
-
-      .save-btn.active:hover {
-        background-color: #0056b3;
-        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
-      }
-
       .btn-row {
         display: flex;
         align-items: center;
@@ -294,28 +268,50 @@ class Html
         margin-bottom: 12px;
       }
 
-      .reset-btn {
-        width: 45px;
-        height: 45px;
+      .action-btn {
         border: none;
         border-radius: 5px;
-        font-size: 24px;
+        height: 45px;
         color: #fff;
-        background-color: #bbb;
-        cursor: not-allowed;
+        font-weight: bold;
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
+        background-color: #bbb;
+        cursor: not-allowed;
+      }
+
+      .action-btn.active {
+        cursor: pointer;
+      }
+
+      .save-btn {
+        width: 150px;
+        font-size: 16px;
+      }
+
+      .save-btn.active {
+        background-color: #007bff;
+      }
+
+      .save-btn.active:hover {
+        background-color: #0056b3;
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+      }
+
+      .reset-btn {
+        width: 45px;
+        font-size: 24px;
       }
 
       .reset-btn.active {
         background-color: #e67e00;
-        cursor: pointer;
       }
 
       .reset-btn.active:hover {
         background-color: #cf6f00;
         box-shadow: 0 5px 15px rgba(230, 126, 0, 0.3);
       }
+
     </style>
   </head>
   <body>
@@ -374,8 +370,8 @@ class Html
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="reset-btn" disabled>&#x21BA;</button>
-              <button type="submit" class="save-btn" disabled>Save</button>
+              <button type="button" class="action-btn reset-btn" disabled>&#x21BA;</button>
+              <button type="submit" class="action-btn save-btn" disabled>Save</button>
             </div>
           </div>
         </fieldset>
@@ -432,8 +428,8 @@ class Html
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="reset-btn" disabled>&#x21BA;</button>
-              <button type="submit" class="save-btn" disabled>Save</button>
+              <button type="button" class="action-btn reset-btn" disabled>&#x21BA;</button>
+              <button type="submit" class="action-btn save-btn" disabled>Save</button>
             </div>
           </div>
         </fieldset>
@@ -490,8 +486,8 @@ class Html
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="reset-btn" disabled>&#x21BA;</button>
-              <button type="submit" class="save-btn" disabled>Save</button>
+              <button type="button" class="action-btn reset-btn" disabled>&#x21BA;</button>
+              <button type="submit" class="action-btn save-btn" disabled>Save</button>
             </div>
           </div>
         </fieldset>
@@ -537,8 +533,8 @@ class Html
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="reset-btn" disabled>&#x21BA;</button>
-              <button type="submit" class="save-btn" disabled>Save</button>
+              <button type="button" class="action-btn reset-btn" disabled>&#x21BA;</button>
+              <button type="submit" class="action-btn save-btn" disabled>Save</button>
             </div>
           </div>
         </fieldset>
@@ -573,8 +569,8 @@ class Html
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="reset-btn" disabled>&#x21BA;</button>
-              <button type="submit" class="save-btn" disabled>Save</button>
+              <button type="button" class="action-btn reset-btn" disabled>&#x21BA;</button>
+              <button type="submit" class="action-btn save-btn" disabled>Save</button>
             </div>
           </div>
         </fieldset>
@@ -614,8 +610,8 @@ class Html
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="reset-btn" disabled>&#x21BA;</button>
-              <button type="submit" class="save-btn" disabled>Save</button>
+              <button type="button" class="action-btn reset-btn" disabled>&#x21BA;</button>
+              <button type="submit" class="action-btn save-btn" disabled>Save</button>
             </div>
           </div>
         </fieldset>
@@ -672,8 +668,8 @@ class Html
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="reset-btn" disabled>&#x21BA;</button>
-              <button type="submit" class="save-btn" disabled>Save</button>
+              <button type="button" class="action-btn reset-btn" disabled>&#x21BA;</button>
+              <button type="submit" class="action-btn save-btn" disabled>Save</button>
             </div>
           </div>
         </fieldset>
@@ -701,8 +697,8 @@ class Html
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="reset-btn" disabled>&#x21BA;</button>
-              <button type="submit" class="save-btn" disabled>Save</button>
+              <button type="button" class="action-btn reset-btn" disabled>&#x21BA;</button>
+              <button type="submit" class="action-btn save-btn" disabled>Save</button>
             </div>
           </div>
         </fieldset>
