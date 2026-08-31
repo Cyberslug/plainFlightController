@@ -710,20 +710,51 @@ class Html
     </div>
     <script>
       document.querySelectorAll("fieldset").forEach(initFieldset);
+      let audioCtx = null;
+
+      function playClick() {
+        if (!audioCtx)
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(
+            800,
+            audioCtx.currentTime + 0.012
+        );
+
+        gain.gain.setValueAtTime(0.035, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(
+            0.0001,
+            audioCtx.currentTime + 0.012
+        );
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.012);
+      }
 
       function initFieldset(fieldset) {
         const saveBtn = fieldset.querySelector(".save-btn");
         const resetBtn = fieldset.querySelector(".reset-btn");
 
         resetBtn.addEventListener("click", () => {
-          if (resetBtn.disabled) return;
+          if (resetBtn.disabled) 
+            return;
+
+          playClick();
           fieldset.querySelectorAll(".input-box").forEach(i => {
             i.value = i.dataset.initial;
             i.classList.remove("changed", "invalid");
           });
+
           fieldset.querySelectorAll(".info").forEach(info => {
             info.classList.remove("visible");
           });
+
           saveBtn.disabled = true;
           saveBtn.classList.remove("active");
           resetBtn.disabled = true;
@@ -737,10 +768,11 @@ class Html
             return;
           }
 
+          playClick();
           sessionStorage.setItem("scrollY", window.scrollY);
 
           fieldset.querySelectorAll(".input-box").forEach((i) => {
-            i.value = i.value.replace(",", "."); // Ensure dot as decimal separator
+            i.value = i.value.replace(",", ".");
           });
         });
 
@@ -770,14 +802,11 @@ class Html
           const minus = input.closest(".quantity").querySelector(".minus");
           const plus = input.closest(".quantity").querySelector(".plus");
           const infoBox = input.closest(".container").querySelector(".info");
-
           const initial = parseFloat(input.value);
           const min = parseValue(input.min);
           const max = parseValue(input.max);
           const step = parseValue(input.step) || 1;
-          const decimals = step.toString().includes(".")
-            ? step.toString().split(".")[1].length
-            : 0;
+          const decimals = step.toString().includes(".") ? step.toString().split(".")[1].length : 0;
 
           function updateInfoBox() {
             infoBox.textContent = `${initial} [${min} / ${max}]`;
@@ -818,6 +847,7 @@ class Html
             if (isNaN(val))
                 return;
 
+            playClick();            
             const newValue = val + delta;
             if (newValue < min || newValue > max)
                 return;
@@ -834,7 +864,7 @@ class Html
             input.value = input.value.replace(/[^0-9\-\.]/g, "");
             validate();
             updateInfoBox();
-          });
+          });          
           input.addEventListener("focus", updateInfoBox);
           input.addEventListener("blur", () => {
             if (input.value === "") {
@@ -884,7 +914,7 @@ class Html
         (e) => {
           const now = Date.now();
           if (now - lastTap < 300) {
-            e.preventDefault(); // block zoom on double-tap
+            e.preventDefault();
           }
           lastTap = now;
         },
@@ -892,59 +922,50 @@ class Html
       );
 
       async function updateModelAttitude() {
-  try {
-    const response = await fetch("/MODEL");
+        try {
+          const response = await fetch("/MODEL");
 
-    if (!response.ok) {
-      throw new Error("HTTP " + response.status);
-    }
+          if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+          }
 
-    const data = await response.json();
+          const data = await response.json();
+          const pitch = document.getElementById("modelPitch");
+          const roll = document.getElementById("modelRoll");
+          const volts = document.getElementById("batteryVolts");
+          const focused = document.activeElement;
+          const newPitch = Number(data.pitch).toFixed(1);
+          const newRoll = Number(data.roll).toFixed(1);
+          const newVolts = Number(data.volts).toFixed(2);
 
-    const pitch = document.getElementById("modelPitch");
-    const roll = document.getElementById("modelRoll");
-    const volts = document.getElementById("batteryVolts");
+          if (pitch.textContent !== newPitch) {
+            pitch.textContent = newPitch;
+          }
 
-    // Remember the element that currently has focus
-    const focused = document.activeElement;
+          if (roll.textContent !== newRoll) {
+            roll.textContent = newRoll;
+          }
 
-    // Update DOM
-    const newPitch = Number(data.pitch).toFixed(1);
-    const newRoll = Number(data.roll).toFixed(1);
-    const newVolts = Number(data.volts).toFixed(2);
+          if (volts.textContent !== newVolts) {
+            volts.textContent = newVolts;
+          }
 
-    if (pitch.textContent !== newPitch) {
-      pitch.textContent = newPitch;
-    }
-
-    if (roll.textContent !== newRoll) {
-      roll.textContent = newRoll;
-    }
-
-    if (volts.textContent !== newVolts) {
-      volts.textContent = newVolts;
-    }
-
-  } catch (error) {
-    console.error("Failed to update model attitude:", error);
-  }
-}
+        } catch (error) {
+          console.error("Failed to update model attitude:", error);
+        }
+      }
 
     window.addEventListener("load", () => {
+      const y = sessionStorage.getItem("scrollY");
 
-        const y = sessionStorage.getItem("scrollY");
-
-        if (y !== null) {
-            window.scrollTo(0, parseInt(y));
-            sessionStorage.removeItem("scrollY");
-        }
-
+      if (y !== null) {
+          window.scrollTo(0, parseInt(y));
+          sessionStorage.removeItem("scrollY");
+      }
     });
 
-      // Update immediately, then every second
-      updateModelAttitude();
-      setInterval(updateModelAttitude, 1000);
-
+    updateModelAttitude();
+    setInterval(updateModelAttitude, 1000);
     </script>
   </body>
 </html>)rawliteral";
