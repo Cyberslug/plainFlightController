@@ -813,23 +813,22 @@ class Html
             }
           }
 
-          minus.addEventListener("click", () => {
+          function adjust(delta) {
             const val = parseValue(input.value);
-            if (!isNaN(val) && val > min) {
-              input.value = parseValue((val - step).toFixed(decimals));
-              validate();
-              updateInfoBox();
-            }
-          });
+            if (isNaN(val))
+                return;
 
-          plus.addEventListener("click", () => {
-            const val = parseValue(input.value);
-            if (!isNaN(val) && val < max) {
-              input.value = parseValue((val + step).toFixed(decimals));
-              validate();
-              updateInfoBox();
-            }
-          });
+            const newValue = val + delta;
+            if (newValue < min || newValue > max)
+                return;
+
+            input.value = Number(newValue.toFixed(decimals));
+            validate();
+            updateInfoBox();
+          }
+
+          minus.addEventListener("click", () => adjust(-step));
+          plus.addEventListener("click", () => adjust(step));
 
           input.addEventListener("input", () => {
             input.value = input.value.replace(/[^0-9\-\.]/g, "");
