@@ -105,32 +105,32 @@ WifiConfig::startWifiConfigurator()
   dnsServer.start(53, "*", m_localIP);
 
   //Pages
-  server.on("/", HTTP_GET, [this](){handleRoot();});
-  server.on("/main", HTTP_GET, [this](){sendMain();});
+  server.on(STR_PAGE_ROOT, HTTP_GET, [this](){handleRoot();});
+  server.on(STR_PAGE_MAIN, HTTP_GET, [this](){sendMain();});
   
   //Forms
-  server.on("/PITCH", HTTP_POST, [this](){handlePitchGains();});
-  server.on("/ROLL", HTTP_POST, [this](){handleRollGains();});
-  server.on("/YAW", HTTP_POST, [this](){handleYawGains();});
-  server.on("/RATES", HTTP_POST, [this](){handleDegreeRates();});
-  server.on("/ANGLE", HTTP_POST, [this](){handleMaxLevelAngles();});
-  server.on("/LEVEL_TRIMS", HTTP_POST, [this](){handleLevelTrims();});
-  server.on("/SERVO_TRIMS", HTTP_POST, [this](){handleServoTrims();});
-  server.on("/VOLT_TRIM", HTTP_POST, [this](){handleBatteryTrim();});
+  server.on(STR_FORM_PITCH, HTTP_POST, [this](){handlePitchGains();});
+  server.on(STR_FORM_ROLL, HTTP_POST, [this](){handleRollGains();});
+  server.on(STR_FORM_YAW, HTTP_POST, [this](){handleYawGains();});
+  server.on(STR_FORM_RATES, HTTP_POST, [this](){handleDegreeRates();});
+  server.on(STR_FORM_ANGLE, HTTP_POST, [this](){handleMaxLevelAngles();});
+  server.on(STR_FORM_LEVEL_TRIMS, HTTP_POST, [this](){handleLevelTrims();});
+  server.on(STR_FORM_SERVO_TRIMS, HTTP_POST, [this](){handleServoTrims();});
+  server.on(STR_FORM_VOLT_TRIM, HTTP_POST, [this](){handleBatteryTrim();});
 
   //Captive portal detection
-  server.on("/generate_204", HTTP_GET, [this](){handleRoot();});
-  server.on("/hotspot-detect.html", HTTP_GET, [this](){handleRoot();});
-  server.on("/connecttest.txt", HTTP_GET, [this](){handleRoot();});
-  server.on("/ncsi.txt", HTTP_GET, [this](){handleRoot();});
-  server.on("/fwlink", HTTP_GET, [this](){handleRoot();});
+  server.on(STR_PORTAL_ROOT_1, HTTP_GET, [this](){handleRoot();});
+  server.on(STR_PORTAL_ROOT_2, HTTP_GET, [this](){handleRoot();});
+  server.on(STR_PORTAL_ROOT_3, HTTP_GET, [this](){handleRoot();});
+  server.on(STR_PORTAL_ROOT_4, HTTP_GET, [this](){handleRoot();});
+  server.on(STR_PORTAL_ROOT_5, HTTP_GET, [this](){handleRoot();});
   server.onNotFound([this](){handleNotFound();});
 
   //Handle live updates
-  server.on("/MODEL", HTTP_GET, [this](){handleModelUpdates();});
+  server.on(STR_LIVE_UPDATE_MODEL, HTTP_GET, [this](){handleModelUpdates();});
 
   server.begin();
-  return true;//TODO - look at old stuff and see how it worked
+  return true;
 }
 
 
@@ -198,7 +198,7 @@ WifiConfig::sendMain()
   }
   else
   {
-    server.send(200, "text/html", m_html);
+    server.send(200, STR_TEXT_HTML, m_html);
   }
 }
     
@@ -209,10 +209,10 @@ WifiConfig::sendMain()
 void
 WifiConfig::handleRoot()
 {
-  Serial.println("handle root");
+  if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println("handle root");}
 
-  server.sendHeader("Location", "http://192.168.4.1/main", true);
-  server.send(302, "text/plain", "");
+  server.sendHeader(STR_LOCATION, STR_ESP_MAIN_URL, true);
+  server.send(302, STR_TEXT_PLAIN, "");
 }
 
 
@@ -222,10 +222,10 @@ WifiConfig::handleRoot()
 void
 WifiConfig::handleNotFound()
 {
-  Serial.println("handle not found");
+  if constexpr(InternalConfig::DEBUG_CONFIGURATOR){Serial.println("handle not found");}
 
-  server.sendHeader("Location", "http://192.168.4.1/main", true);
-  server.send(302, "text/plain", "");
+  server.sendHeader(STR_LOCATION, STR_ESP_MAIN_URL, true);
+  server.send(302, STR_TEXT_PLAIN, "");
 }
 
 
@@ -236,10 +236,10 @@ WifiConfig::handleNotFound()
 void
 WifiConfig::updateGains(PIDF::Gains* const theGains)
 {
-  const uint32_t P = server.arg("P").toInt();
-  const uint32_t I = server.arg("I").toInt();
-  const uint32_t D = server.arg("D").toInt();
-  const uint32_t F = server.arg("F").toInt();
+  const uint32_t P = server.arg(ARG_P).toInt();
+  const uint32_t I = server.arg(ARG_I).toInt();
+  const uint32_t D = server.arg(ARG_D).toInt();
+  const uint32_t F = server.arg(ARG_F).toInt();
 
   if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {
@@ -264,7 +264,7 @@ void
 WifiConfig::handlePitchGains()
 {
   updateGains(&m_webData->gains.pitch);
-  server.sendHeader("Location", "/main");
+  server.sendHeader(STR_LOCATION, STR_PAGE_MAIN);
   server.send(303);
   m_dataUpdated = true;
 }
@@ -277,7 +277,7 @@ void
 WifiConfig::handleRollGains()
 {
   updateGains(&m_webData->gains.roll);
-  server.sendHeader("Location", "/main");
+  server.sendHeader(STR_LOCATION, STR_PAGE_MAIN);
   server.send(303);
   m_dataUpdated = true;
 }
@@ -290,7 +290,7 @@ void
 WifiConfig::handleYawGains()
 {
   updateGains(&m_webData->gains.yaw);
-  server.sendHeader("Location", "/main");
+  server.sendHeader(STR_LOCATION, STR_PAGE_MAIN);
   server.send(303);
   m_dataUpdated = true;
 }
@@ -302,9 +302,9 @@ WifiConfig::handleYawGains()
 void
 WifiConfig::handleDegreeRates()
 {
-  const uint32_t pitch = static_cast<uint32_t>(server.arg("pitch").toInt() * 100);
-  const uint32_t roll = static_cast<uint32_t>(server.arg("roll").toInt() * 100);
-  const uint32_t yaw = static_cast<uint32_t>(server.arg("yaw").toInt() * 100);
+  const uint32_t pitch = static_cast<uint32_t>(server.arg(ARG_PITCH).toInt() * 100);
+  const uint32_t roll = static_cast<uint32_t>(server.arg(ARG_ROLL).toInt() * 100);
+  const uint32_t yaw = static_cast<uint32_t>(server.arg(ARG_YAW).toInt() * 100);
 
   if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {
@@ -318,7 +318,7 @@ WifiConfig::handleDegreeRates()
   m_webData->rates.roll = roll;
   m_webData->rates.yaw = yaw;
 
-  server.sendHeader("Location", "/main");
+  server.sendHeader(STR_LOCATION, STR_PAGE_MAIN);
   server.send(303);
   m_dataUpdated = true;
 }
@@ -330,8 +330,8 @@ WifiConfig::handleDegreeRates()
 void
 WifiConfig::handleMaxLevelAngles()
 {
-  const uint32_t pitch = static_cast<uint32_t>(server.arg("pitch").toInt() * 100);
-  const uint32_t roll = static_cast<uint32_t>(server.arg("roll").toInt() * 100);
+  const uint32_t pitch = static_cast<uint32_t>(server.arg(ARG_PITCH).toInt() * 100);
+  const uint32_t roll = static_cast<uint32_t>(server.arg(ARG_ROLL).toInt() * 100);
 
   if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {
@@ -343,7 +343,7 @@ WifiConfig::handleMaxLevelAngles()
   m_webData->maxAngle.pitch = pitch;
   m_webData->maxAngle.roll = roll;
 
-  server.sendHeader("Location", "/main");
+  server.sendHeader(STR_LOCATION, STR_PAGE_MAIN);
   server.send(303);
   m_dataUpdated = true;
 }
@@ -355,8 +355,8 @@ WifiConfig::handleMaxLevelAngles()
 void
 WifiConfig::handleLevelTrims()
 {
-  const float pitch = server.arg("pitch").toFloat();
-  const float roll = server.arg("roll").toFloat();
+  const float pitch = server.arg(ARG_PITCH).toFloat();
+  const float roll = server.arg(ARG_ROLL).toFloat();
 
   if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {
@@ -368,7 +368,7 @@ WifiConfig::handleLevelTrims()
   m_webData->levelTrim.pitch = pitch;
   m_webData->levelTrim.roll = roll;
 
-  server.sendHeader("Location", "/main");
+  server.sendHeader(STR_LOCATION, STR_PAGE_MAIN);
   server.send(303);
   m_dataUpdated = true;
 }
@@ -380,10 +380,10 @@ WifiConfig::handleLevelTrims()
 void
 WifiConfig::handleServoTrims()
 {
-  const int32_t servo1 = server.arg("Servo1").toInt();
-  const int32_t servo2 = server.arg("Servo2").toInt();
-  const int32_t servo3 = server.arg("Servo3").toInt();
-  const int32_t servo4 = server.arg("Servo4").toInt();
+  const int32_t servo1 = server.arg(ARG_SERVO1).toInt();
+  const int32_t servo2 = server.arg(ARG_SERVO2).toInt();
+  const int32_t servo3 = server.arg(ARG_SERVO3).toInt();
+  const int32_t servo4 = server.arg(ARG_SERVO4).toInt();
 
   if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {
@@ -399,7 +399,7 @@ WifiConfig::handleServoTrims()
   m_webData->servoTrim.servo3 = servo3;
   m_webData->servoTrim.servo4 = servo4;
 
-  server.sendHeader("Location", "/main");
+  server.sendHeader(STR_LOCATION, STR_PAGE_MAIN);
   server.send(303);
   m_dataUpdated = true;
 }
@@ -411,7 +411,7 @@ WifiConfig::handleServoTrims()
 void
 WifiConfig::handleBatteryTrim()
 {
-  const float voltCalibration = server.arg("volts").toFloat();
+  const float voltCalibration = server.arg(ARG_VOLTS).toFloat();
 
   if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {
@@ -422,7 +422,7 @@ WifiConfig::handleBatteryTrim()
 
   m_webData->batteryScaler = voltCalibration;
 
-  server.sendHeader("Location", "/main");
+  server.sendHeader(STR_LOCATION, STR_PAGE_MAIN);
   server.send(303);
   m_dataUpdated = true;
 }
@@ -454,6 +454,6 @@ WifiConfig::handleModelUpdates()
   }
   else
   {
-    server.send(200, "application/json", json);
+    server.send(200, STR_APP_JSON, json);
   }
 }

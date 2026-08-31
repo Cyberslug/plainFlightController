@@ -61,6 +61,45 @@ class WifiConfig : public Html
     static constexpr char PASSWORD[] = "12345678";
     static constexpr uint32_t HTML_VARIABLES_SIZE = 200U;
     static constexpr uint32_t HTML_DOC_BUFF_SIZE = sizeof(INDEX_HTML) + HTML_VARIABLES_SIZE;
+    //Captive portal strings
+    static constexpr char STR_PORTAL_ROOT_1[] = "/generate_204";
+    static constexpr char STR_PORTAL_ROOT_2[] = "/hotspot-detect.html";
+    static constexpr char STR_PORTAL_ROOT_3[] = "/connecttest.txt";
+    static constexpr char STR_PORTAL_ROOT_4[] = "/ncsi.txt";
+    static constexpr char STR_PORTAL_ROOT_5[] = "/fwlink";
+    //Pages
+    static constexpr char STR_PAGE_ROOT[] = "/";
+    static constexpr char STR_PAGE_MAIN[] = "/main";
+    //Forms
+    static constexpr char STR_FORM_PITCH[] = "/PITCH";
+    static constexpr char STR_FORM_ROLL[] = "/ROLL";
+    static constexpr char STR_FORM_YAW[] = "/YAW";
+    static constexpr char STR_FORM_RATES[] = "/RATES";
+    static constexpr char STR_FORM_ANGLE[] = "/ANGLE";
+    static constexpr char STR_FORM_LEVEL_TRIMS[] = "/LEVEL_TRIMS";
+    static constexpr char STR_FORM_SERVO_TRIMS[] = "/SERVO_TRIMS";
+    static constexpr char STR_FORM_VOLT_TRIM[] = "/VOLT_TRIM";
+    //Handle live updates
+    static constexpr char STR_LIVE_UPDATE_MODEL[] = "/MODEL";
+    //Strings
+    static constexpr char STR_TEXT_PLAIN[] = "text/plain";
+    static constexpr char STR_TEXT_HTML[] = "text/html";
+    static constexpr char STR_APP_JSON[] = "application/json";
+    static constexpr char STR_LOCATION[] = "Location";
+    static constexpr char STR_ESP_MAIN_URL[] = "http://192.168.4.1/main";
+    //Received argument strings
+    static constexpr char ARG_P[] = "P";
+    static constexpr char ARG_I[] = "I";
+    static constexpr char ARG_D[] = "D";
+    static constexpr char ARG_F[] = "F";
+    static constexpr char ARG_VOLTS[] = "volts";
+    static constexpr char ARG_PITCH[] = "pitch";
+    static constexpr char ARG_ROLL[] = "roll";
+    static constexpr char ARG_YAW[] = "yaw";
+    static constexpr char ARG_SERVO1[] = "Servo1";
+    static constexpr char ARG_SERVO2[] = "Servo2";
+    static constexpr char ARG_SERVO3[] = "Servo3";
+    static constexpr char ARG_SERVO4[] = "Servo4";
 
     //Methods
     void updateGains(PIDF::Gains* const theGains);
