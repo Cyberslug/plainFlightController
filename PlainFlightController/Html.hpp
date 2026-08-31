@@ -913,15 +913,6 @@ class Html
     // Remember the element that currently has focus
     const focused = document.activeElement;
 
-    // Remember cursor position if it is an input
-    let selectionStart = null;
-    let selectionEnd = null;
-
-    if (focused && focused.tagName === "INPUT") {
-      selectionStart = focused.selectionStart;
-      selectionEnd = focused.selectionEnd;
-    }
-
     // Update DOM
     const newPitch = Number(data.pitch).toFixed(1);
     const newRoll = Number(data.roll).toFixed(1);
