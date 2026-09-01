@@ -57,7 +57,7 @@ class Configurator
     const float getBatteryScaler() const {return m_fileData.batteryScaler;};
 
     void updateBatteryVoltage(const float batteryVoltage) {m_batteryVoltage = batteryVoltage;};
-    void updateImuAngles(const float pitch, const float roll, const float yaw) {m_pitch = pitch; m_roll = roll; m_yaw = yaw;};
+    void updateImuAngles(const float pitch, const float roll) {m_pitch = pitch; m_roll = roll; };
 
   private:
     //Default values for file system
@@ -103,9 +103,8 @@ class Configurator
     float m_batteryVoltage = 0.0f;
     float m_pitch          = 0.0f;
     float m_roll           = 0.0f;
-    float m_yaw            = 0.0f;
 
     //Objects
-    WifiConfig wifi = WifiConfig(&m_fileData, &m_batteryVoltage, &m_pitch, &m_roll, &m_yaw);
+    WifiConfig wifi = WifiConfig(&m_fileData, &m_batteryVoltage, &m_pitch, &m_roll);
     FileSystem fileSys;
 };

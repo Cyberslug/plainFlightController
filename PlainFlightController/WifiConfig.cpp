@@ -31,13 +31,12 @@
 * @param    Parameters to be displayed/updated by the WiFi configurator
 * @note     TODO - this can be done better in the hpp.
 */
-WifiConfig::WifiConfig(FileSystem::NonVolatileData * const theData, float* const batteryVoltage, float* const pitch, float* const roll, float* const yaw)
+WifiConfig::WifiConfig(FileSystem::NonVolatileData * const theData, float* const batteryVoltage, float* const pitch, float* const roll)
 {
   m_webData = theData;
   m_batteryVoltage = batteryVoltage;
   m_pitch = pitch;
   m_roll = roll;
-  m_yaw = yaw;
 }
 
 
@@ -183,9 +182,9 @@ WifiConfig::sendMain()
 
   const int32_t n = snprintf (m_html, HTML_DOC_BUFF_SIZE, INDEX_HTML, 
                           InternalConfig::SOFTWARE_VERSION,
-                          m_webData->gains.pitch.p, m_webData->gains.pitch.i, m_webData->gains.pitch.d, m_webData->gains.pitch.ff,
-                          m_webData->gains.roll.p, m_webData->gains.roll.i, m_webData->gains.roll.d, m_webData->gains.roll.ff,
-                          m_webData->gains.yaw.p, m_webData->gains.yaw.i, m_webData->gains.yaw.d, m_webData->gains.yaw.ff,
+                          m_webData->gains.pitch.p, m_webData->gains.pitch.i, (m_webData->gains.pitch.d/10), m_webData->gains.pitch.ff,
+                          m_webData->gains.roll.p, m_webData->gains.roll.i, (m_webData->gains.roll.d/10), m_webData->gains.roll.ff,
+                          m_webData->gains.yaw.p, m_webData->gains.yaw.i, (m_webData->gains.yaw.d/10), m_webData->gains.yaw.ff,
                           (m_webData->rates.pitch/100), degreesPerSec, (m_webData->rates.roll/100), degreesPerSec, (m_webData->rates.yaw/100), degreesPerSec, 
                           (m_webData->maxAngle.pitch/100), (m_webData->maxAngle.roll/100), 
                           *m_pitch, *m_roll, m_webData->levelTrim.pitch, m_webData->levelTrim.roll, 
@@ -238,7 +237,7 @@ WifiConfig::updateGains(PIDF::Gains* const theGains)
 {
   const uint32_t P = server.arg(ARG_P).toInt();
   const uint32_t I = server.arg(ARG_I).toInt();
-  const uint32_t D = server.arg(ARG_D).toInt();
+  const uint32_t D = server.arg(ARG_D).toInt() * 10;
   const uint32_t F = server.arg(ARG_F).toInt();
 
   if constexpr(InternalConfig::DEBUG_CONFIGURATOR)

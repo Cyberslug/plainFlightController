@@ -352,7 +352,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease D">&minus;</button>
-                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="2000">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="200">
                     <button type="button" class="plus" aria-label="Increase D">&plus;</button>
                   </div>
                 </div>
@@ -410,7 +410,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease D">&minus;</button>
-                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="2000">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="200">
                     <button type="button" class="plus" aria-label="Increase D">&plus;</button>
                   </div>
                 </div>
@@ -468,7 +468,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease D">&minus;</button>
-                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="2000">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="200">
                     <button type="button" class="plus" aria-label="Increase D">&plus;</button>
                   </div>
                 </div>
@@ -705,7 +705,8 @@ class Html
       </form>
 
       <p class="footer">Copyright 2025 P.Cook (alias 'plainFlight')<br><br>
-        https://github.com&#8203;/&#8203;plainFlight&#8203;/&#8203;plainFlightController is licensed under the GNU General Public License v3.0<br><br>
+        https://github.com/plainFlight 
+        plainFlightController is licensed under the GNU General Public License v3.0<br><br>
         USE AT YOUR OWN RISK & LIABILITY</p>
     </div>
     <script>
