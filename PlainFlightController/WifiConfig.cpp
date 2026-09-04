@@ -31,12 +31,13 @@
 * @param    Parameters to be displayed/updated by the WiFi configurator
 * @note     TODO - this can be done better in the hpp.
 */
-WifiConfig::WifiConfig(FileSystem::NonVolatileData * const theData, float* const batteryVoltage, float* const pitch, float* const roll)
+WifiConfig::WifiConfig(FileSystem::NonVolatileData * const theData, float* const batteryVoltage, float* const pitch, float* const roll, float* const yaw)
 {
   m_webData = theData;
   m_batteryVoltage = batteryVoltage;
   m_pitch = pitch;
   m_roll = roll;
+  m_yaw = yaw;
 }
 
 
@@ -187,7 +188,7 @@ WifiConfig::sendMain()
                           m_webData->gains.yaw.p, m_webData->gains.yaw.i, (m_webData->gains.yaw.d/10), m_webData->gains.yaw.ff,
                           (m_webData->rates.pitch/100), degreesPerSec, (m_webData->rates.roll/100), degreesPerSec, (m_webData->rates.yaw/100), degreesPerSec, 
                           (m_webData->maxAngle.pitch/100), (m_webData->maxAngle.roll/100), 
-                          *m_pitch, *m_roll, m_webData->levelTrim.pitch, m_webData->levelTrim.roll, 
+                          *m_pitch, *m_roll, *m_yaw, m_webData->levelTrim.pitch, m_webData->levelTrim.roll, m_webData->levelTrim.yaw,
                           m_webData->servoTrim.servo1, m_webData->servoTrim.servo2, m_webData->servoTrim.servo3, m_webData->servoTrim.servo4,
                           *m_batteryVoltage, m_webData->batteryScaler);
 
@@ -356,16 +357,19 @@ WifiConfig::handleLevelTrims()
 {
   const float pitch = server.arg(ARG_PITCH).toFloat();
   const float roll = server.arg(ARG_ROLL).toFloat();
+  const float yaw = server.arg(ARG_YAW).toFloat();
 
   if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {
     Serial.println("Level trims updated:");
     Serial.println("Pitch:" + String(pitch));
     Serial.println("Roll:" + String(roll));
+    Serial.println("Yaw:" + String(yaw));
   }
 
   m_webData->levelTrim.pitch = pitch;
   m_webData->levelTrim.roll = roll;
+  m_webData->levelTrim.yaw = yaw;     //Note: This is used to trim level when in prophang mode
 
   server.sendHeader(STR_LOCATION, STR_PAGE_MAIN);
   server.send(303);
@@ -438,8 +442,8 @@ WifiConfig::handleModelUpdates()
 
   const int32_t n = snprintf(
             json, sizeof(json),
-            "{\"pitch\":%.1f,\"roll\":%.1f, \"volts\":%.2f}",
-            *m_pitch, *m_roll, *m_batteryVoltage);
+            "{\"pitch\":%.1f,\"roll\":%.1f,\"yaw\":%.1f,\"volts\":%.2f}",
+            *m_pitch, *m_roll, *m_yaw, *m_batteryVoltage);
 
   if constexpr(InternalConfig::DEBUG_CONFIGURATOR)
   {

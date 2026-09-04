@@ -57,7 +57,7 @@ class Configurator
     const float getBatteryScaler() const {return m_fileData.batteryScaler;};
 
     void updateBatteryVoltage(const float batteryVoltage) {m_batteryVoltage = batteryVoltage;};
-    void updateImuAngles(const float pitch, const float roll) {m_pitch = pitch; m_roll = roll; };
+    void updateImuAngles(const float pitch, const float roll, const float yaw) {m_pitch = pitch; m_roll = roll; m_yaw = yaw;};
 
   private:
     //Default values for file system
@@ -71,6 +71,7 @@ class Configurator
     //Trims
     static constexpr  float LEVELLED_ROLL_TRIM        = 0.0f;
     static constexpr  float LEVELLED_PITCH_TRIM       = 0.0f;
+    static constexpr  float LEVELLED_YAW_TRIM         = 0.0f;
     static constexpr  int32_t SERVO_TRIM              = 0;
     //Gains
     static constexpr  int32_t PITCH_P_GAIN              = 25;
@@ -95,7 +96,7 @@ class Configurator
       {YAW_P_GAIN, YAW_I_GAIN, YAW_D_GAIN, YAW_F_GAIN}},
       {MAX_PITCH_RATE_DEGS_x100, MAX_ROLL_RATE_DEGS_x100, MAX_YAW_RATE_DEGS_x100}, 
       {MAX_PITCH_ANGLE_DEGS_x100, MAX_ROLL_ANGLE_DEGS_x100},
-      {LEVELLED_PITCH_TRIM, LEVELLED_ROLL_TRIM},
+      {LEVELLED_PITCH_TRIM, LEVELLED_ROLL_TRIM, LEVELLED_YAW_TRIM},
       {SERVO_TRIM, SERVO_TRIM, SERVO_TRIM, SERVO_TRIM},
       BATTERY_SCALER,          
       };
@@ -103,8 +104,9 @@ class Configurator
     float m_batteryVoltage = 0.0f;
     float m_pitch          = 0.0f;
     float m_roll           = 0.0f;
+    float m_yaw            = 0.0f;
 
     //Objects
-    WifiConfig wifi = WifiConfig(&m_fileData, &m_batteryVoltage, &m_pitch, &m_roll);
+    WifiConfig wifi = WifiConfig(&m_fileData, &m_batteryVoltage, &m_pitch, &m_roll, &m_yaw);
     FileSystem fileSys;
 };

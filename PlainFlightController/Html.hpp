@@ -584,7 +584,9 @@ class Html
               <p class="p1">
                 Current: 
                 pitch <span id="modelPitch">%.1f</span>&deg;,
-                roll <span id="modelRoll">%.1f</span>&deg;
+                roll <span id="modelRoll">%.1f</span>&deg;<br>
+                Prophang mode:
+                yaw <span id="modelYaw">%.1f</span>&deg;
               </p>
               <div class="gain-row">
                 <label>Pitch (degrees)</label>
@@ -605,6 +607,17 @@ class Html
                     <button type="button" class="minus" aria-label="Decrease Roll">&minus;</button>
                     <input class="input-box" type="number" inputmode="decimal" lang="en" name="roll" value="%.1f" min="-25.0" max="25.0" step="0.1">
                     <button type="button" class="plus" aria-label="Increase Roll">&plus;</button>
+                  </div>
+                </div>
+              </div>
+              <div class="gain-row">
+                <label>Yaw (degrees)</label>
+                <div class="container">
+                  <div class="info"></div>
+                  <div class="quantity">
+                    <button type="button" class="minus" aria-label="Decrease Yaw">&minus;</button>
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="yaw" value="%.1f" min="-25.0" max="25.0" step="0.1">
+                    <button type="button" class="plus" aria-label="Increase Yaw">&plus;</button>
                   </div>
                 </div>
               </div>
@@ -933,10 +946,12 @@ class Html
           const data = await response.json();
           const pitch = document.getElementById("modelPitch");
           const roll = document.getElementById("modelRoll");
+          const yaw = document.getElementById("modelYaw");
           const volts = document.getElementById("batteryVolts");
           const focused = document.activeElement;
           const newPitch = Number(data.pitch).toFixed(1);
           const newRoll = Number(data.roll).toFixed(1);
+          const newYaw = Number(data.yaw).toFixed(1);
           const newVolts = Number(data.volts).toFixed(2);
 
           if (pitch.textContent !== newPitch) {
@@ -945,6 +960,10 @@ class Html
 
           if (roll.textContent !== newRoll) {
             roll.textContent = newRoll;
+          }
+
+          if (yaw.textContent !== newYaw) {
+            yaw.textContent = newYaw;
           }
 
           if (volts.textContent !== newVolts) {

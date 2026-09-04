@@ -39,7 +39,7 @@
 class WifiConfig : public Html
 {
   public:
-    WifiConfig(FileSystem::NonVolatileData* const theData, float* const batteryVoltage, float* const pitch, float* const roll);
+    WifiConfig(FileSystem::NonVolatileData* const theData, float* const batteryVoltage, float* const pitch, float* const roll, float* const yaw);
     void doWiFiStateMachine();
     bool startWifiConfigurator();
     void stopWifiConfigurator();
@@ -126,6 +126,7 @@ class WifiConfig : public Html
     float* m_batteryVoltage;
     float* m_pitch;
     float* m_roll;
+    float* m_yaw;
 
     //Objects
     DNSServer dnsServer;

@@ -513,7 +513,7 @@ FlightControl::doWifiApState()
 
   batteryMonitor.setVoltageScaler(config.getBatteryScaler());
   config.updateBatteryVoltage(batteryMonitor.getVoltage());
-  config.updateImuAngles((imuData->pitch + config.getPitchTrim()), (imuData->roll + config.getRollTrim()));
+  config.updateImuAngles((imuData->pitch + config.getPitchTrim()), (imuData->roll + config.getRollTrim()), (imuData->yaw + config.getYawTrim()));
   config.operate();
 }
 
