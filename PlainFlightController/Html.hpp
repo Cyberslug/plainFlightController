@@ -259,32 +259,6 @@ class Html
         transform: translateX(-50) translateY(0);
       }
 
-      .save-btn {
-        margin-top: 0;
-        margin-bottom: 0;
-        width: 150px;
-        height: 45px;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        font-weight: bold;
-        color: #fff;
-        background-color: #bbb;
-        cursor: not-allowed;
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-      }
-
-      .save-btn.active {
-        background-color: #007bff;
-        cursor: pointer;
-      }
-
-      .save-btn.active:hover {
-        background-color: #0056b3;
-        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
-      }
-
       .btn-row {
         display: flex;
         align-items: center;
@@ -294,28 +268,50 @@ class Html
         margin-bottom: 12px;
       }
 
-      .reset-btn {
-        width: 45px;
-        height: 45px;
+      .action-btn {
         border: none;
         border-radius: 5px;
-        font-size: 24px;
+        height: 45px;
         color: #fff;
-        background-color: #bbb;
-        cursor: not-allowed;
+        font-weight: bold;
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
+        background-color: #bbb;
+        cursor: not-allowed;
+      }
+
+      .action-btn.active {
+        cursor: pointer;
+      }
+
+      .save-btn {
+        width: 150px;
+        font-size: 16px;
+      }
+
+      .save-btn.active {
+        background-color: #007bff;
+      }
+
+      .save-btn.active:hover {
+        background-color: #0056b3;
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+      }
+
+      .reset-btn {
+        width: 45px;
+        font-size: 24px;
       }
 
       .reset-btn.active {
         background-color: #e67e00;
-        cursor: pointer;
       }
 
       .reset-btn.active:hover {
         background-color: #cf6f00;
         box-shadow: 0 5px 15px rgba(230, 126, 0, 0.3);
       }
+
     </style>
   </head>
   <body>
@@ -323,7 +319,7 @@ class Html
       <h1>PlainFlight&#8203;Controller %s<br>Configurator</h1>
       <p class="warning">For Safety Remove Propellers.</p>
 
-      <form action="/PITCH" method="get">
+      <form action="/PITCH" method="POST">
         <fieldset>
           <legend>Pitch Gains</legend>
           <div class="group">
@@ -334,7 +330,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease P">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="P" value="%d" min="0" max="200">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="P" value="%d" min="0" max="200">
                     <button type="button" class="plus" aria-label="Increase P">&plus;</button>
                   </div>
                 </div>
@@ -345,7 +341,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease I">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="I" value="%d" min="0" max="500">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="I" value="%d" min="0" max="500">
                     <button type="button" class="plus" aria-label="Increase I">&plus;</button>
                   </div>
                 </div>
@@ -356,7 +352,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease D">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="2000">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="200">
                     <button type="button" class="plus" aria-label="Increase D">&plus;</button>
                   </div>
                 </div>
@@ -367,21 +363,21 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease F">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="F" value="%d" min="0" max="50">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="F" value="%d" min="0" max="50">
                     <button type="button" class="plus" aria-label="Increase F">&plus;</button>
                   </div>
                 </div>
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="reset-btn" disabled>&#x21BA;</button>
-              <button type="submit" class="save-btn" disabled>Save</button>
+              <button type="button" class="action-btn reset-btn" disabled>&#x21BA;</button>
+              <button type="submit" class="action-btn save-btn" disabled>Save</button>
             </div>
           </div>
         </fieldset>
       </form>
 
-      <form action="/ROLL" method="get">
+      <form action="/ROLL" method="POST">
         <fieldset>
           <legend>Roll Gains</legend>
           <div class="group">
@@ -392,7 +388,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease P">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="P" value="%d" min="0" max="200">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="P" value="%d" min="0" max="200">
                     <button type="button" class="plus" aria-label="Increase P">&plus;</button>
                   </div>
                 </div>
@@ -403,7 +399,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease I">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="I" value="%d" min="0" max="500">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="I" value="%d" min="0" max="500">
                     <button type="button" class="plus" aria-label="Increase I">&plus;</button>
                   </div>
                 </div>
@@ -414,7 +410,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease D">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="2000">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="200">
                     <button type="button" class="plus" aria-label="Increase D">&plus;</button>
                   </div>
                 </div>
@@ -425,21 +421,21 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease F">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="F" value="%d" min="0" max="50">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="F" value="%d" min="0" max="50">
                     <button type="button" class="plus" aria-label="Increase F">&plus;</button>
                   </div>
                 </div>
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="reset-btn" disabled>&#x21BA;</button>
-              <button type="submit" class="save-btn" disabled>Save</button>
+              <button type="button" class="action-btn reset-btn" disabled>&#x21BA;</button>
+              <button type="submit" class="action-btn save-btn" disabled>Save</button>
             </div>
           </div>
         </fieldset>
       </form>
 
-      <form action="/YAW" method="get">
+      <form action="/YAW" method="POST">
         <fieldset>
           <legend>Yaw Gains</legend>
           <div class="group">
@@ -450,7 +446,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease P">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="P" value="%d" min="0" max="200">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="P" value="%d" min="0" max="200">
                     <button type="button" class="plus" aria-label="Increase P">&plus;</button>
                   </div>
                 </div>
@@ -461,7 +457,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease I">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="I" value="%d" min="0" max="500">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="I" value="%d" min="0" max="500">
                     <button type="button" class="plus" aria-label="Increase I">&plus;</button>
                   </div>
                 </div>
@@ -472,7 +468,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease D">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="2000">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="D" value="%d" min="0" max="200">
                     <button type="button" class="plus" aria-label="Increase D">&plus;</button>
                   </div>
                 </div>
@@ -483,21 +479,21 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease F">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="F" value="%d" min="0" max="50">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="F" value="%d" min="0" max="50">
                     <button type="button" class="plus" aria-label="Increase F">&plus;</button>
                   </div>
                 </div>
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="reset-btn" disabled>&#x21BA;</button>
-              <button type="submit" class="save-btn" disabled>Save</button>
+              <button type="button" class="action-btn reset-btn" disabled>&#x21BA;</button>
+              <button type="submit" class="action-btn save-btn" disabled>Save</button>
             </div>
           </div>
         </fieldset>
       </form>
 
-      <form action="/RATES" method="get">
+      <form action="/RATES" method="POST">
         <fieldset>
           <legend>Rates</legend>
           <div class="group">
@@ -508,7 +504,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Pitch">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="pitch" value="%d" min="0" max="%d">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="pitch" value="%d" min="0" max="%d">
                     <button type="button" class="plus" aria-label="Increase Pitch">&plus;</button>
                   </div>
                 </div>
@@ -519,7 +515,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Roll">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="roll" value="%d" min="0" max="%d">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="roll" value="%d" min="0" max="%d">
                     <button type="button" class="plus" aria-label="Increase Roll">&plus;</button>
                   </div>
                 </div>
@@ -530,21 +526,21 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Yaw">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="yaw" value="%d" min="0" max="%d">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="yaw" value="%d" min="0" max="%d">
                     <button type="button" class="plus" aria-label="Increase Yaw">&plus;</button>
                   </div>
                 </div>
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="reset-btn" disabled>&#x21BA;</button>
-              <button type="submit" class="save-btn" disabled>Save</button>
+              <button type="button" class="action-btn reset-btn" disabled>&#x21BA;</button>
+              <button type="submit" class="action-btn save-btn" disabled>Save</button>
             </div>
           </div>
         </fieldset>
       </form>
 
-      <form action="/ANGLE" method="get">
+      <form action="/ANGLE" method="POST">
         <fieldset>
           <legend>Max Self Levelled Angles</legend>
           <div class="group">
@@ -555,7 +551,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Pitch">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="pitch" value="%d" min="0" max="90">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="pitch" value="%d" min="0" max="90">
                     <button type="button" class="plus" aria-label="Increase Pitch">&plus;</button>
                   </div>
                 </div>
@@ -566,27 +562,31 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Roll">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="roll" value="%d" min="0" max="90">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="roll" value="%d" min="0" max="90">
                     <button type="button" class="plus" aria-label="Increase Roll">&plus;</button>
                   </div>
                 </div>
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="reset-btn" disabled>&#x21BA;</button>
-              <button type="submit" class="save-btn" disabled>Save</button>
+              <button type="button" class="action-btn reset-btn" disabled>&#x21BA;</button>
+              <button type="submit" class="action-btn save-btn" disabled>Save</button>
             </div>
           </div>
         </fieldset>
       </form>
 
-      <form action="/LEVEL_TRIMS" method="get">
+      <form action="/LEVEL_TRIMS" method="POST">
         <fieldset>
           <legend>Levelled Trims</legend>
           <div class="group">
             <div class="gains-grid">
-              <p class="p1">Model current:<br>pitch: %.1f, roll: %.1f, yaw: %.1f<br>
-                <a href="javascript:window.location.reload();">(CLICK TO REFRESH)</a>
+              <p class="p1">
+                Current: 
+                pitch <span id="modelPitch">%.1f</span>&deg;,
+                roll <span id="modelRoll">%.1f</span>&deg;<br>
+                Prophang mode:
+                yaw <span id="modelYaw">%.1f</span>&deg;
               </p>
               <div class="gain-row">
                 <label>Pitch (degrees)</label>
@@ -594,7 +594,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Pitch">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="pitch" value="%.1f" min="-25.0" max="25.0" step="0.1">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="pitch" value="%.1f" min="-25.0" max="25.0" step="0.1">
                     <button type="button" class="plus" aria-label="Increase Pitch">&plus;</button>
                   </div>
                 </div>
@@ -605,7 +605,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Roll">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="roll" value="%.1f" min="-25.0" max="25.0" step="0.1">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="roll" value="%.1f" min="-25.0" max="25.0" step="0.1">
                     <button type="button" class="plus" aria-label="Increase Roll">&plus;</button>
                   </div>
                 </div>
@@ -616,21 +616,21 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Yaw">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="yaw" value="%.1f" min="-25.0" max="25.0" step="0.1">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="yaw" value="%.1f" min="-25.0" max="25.0" step="0.1">
                     <button type="button" class="plus" aria-label="Increase Yaw">&plus;</button>
                   </div>
                 </div>
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="reset-btn" disabled>&#x21BA;</button>
-              <button type="submit" class="save-btn" disabled>Save</button>
+              <button type="button" class="action-btn reset-btn" disabled>&#x21BA;</button>
+              <button type="submit" class="action-btn save-btn" disabled>Save</button>
             </div>
           </div>
         </fieldset>
       </form>
 
-      <form action="/SERVO_TRIMS" method="get">
+      <form action="/SERVO_TRIMS" method="POST">
         <fieldset>
           <legend>Servo Trims</legend>
           <div class="group">
@@ -641,7 +641,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Servo 1">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="Servo1" value="%d" min="-200" max="200">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="Servo1" value="%d" min="-200" max="200">
                     <button type="button" class="plus" aria-label="Increase Servo 1">&plus;</button>
                   </div>
                 </div>
@@ -652,7 +652,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Servo 2">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="Servo2" value="%d" min="-200" max="200">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="Servo2" value="%d" min="-200" max="200">
                     <button type="button" class="plus" aria-label="Increase Servo 2">&plus;</button>
                   </div>
                 </div>
@@ -663,7 +663,7 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Servo 3">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="Servo3" value="%d" min="-200" max="200">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="Servo3" value="%d" min="-200" max="200">
                     <button type="button" class="plus" aria-label="Increase Servo 3">&plus;</button>
                   </div>
                 </div>
@@ -674,68 +674,101 @@ class Html
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Servo 4">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="Servo4" value="%d" min="-200" max="200">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="Servo4" value="%d" min="-200" max="200">
                     <button type="button" class="plus" aria-label="Increase Servo 4">&plus;</button>
                   </div>
                 </div>
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="reset-btn" disabled>&#x21BA;</button>
-              <button type="submit" class="save-btn" disabled>Save</button>
+              <button type="button" class="action-btn reset-btn" disabled>&#x21BA;</button>
+              <button type="submit" class="action-btn save-btn" disabled>Save</button>
             </div>
           </div>
         </fieldset>
       </form>
 
-      <form action="/VOLT_TRIM" method="get">
+      <form action="/VOLT_TRIM" method="POST">
         <fieldset>
           <legend>Voltage Trim</legend>
           <div class="group">
             <div class="gains-grid">
-              <p class="p1">Calculated: %.2f Volts<br>
-                <a href="javascript:window.location.reload();">(CLICK TO REFRESH)</a>
+              <p class="p1">
+              Calculated: <span id="batteryVolts">%.2f</span> Volts<br>
               </p>
+
               <div class="gain-row">
                 <label>Scaler</label>
                 <div class="container">
                   <div class="info"></div>
                   <div class="quantity">
                     <button type="button" class="minus" aria-label="Decrease Voltage Scaler">&minus;</button>
-                    <input class="input-box" type="text" inputmode="decimal" lang="en" name="volts" value="%.5f" min="0.0" max="0.05" step="0.00001">
+                    <input class="input-box" type="number" inputmode="decimal" lang="en" name="volts" value="%.5f" min="0.0" max="0.05" step="0.00001">
                     <button type="button" class="plus" aria-label="Increase Voltage Scaler">&plus;</button>
                   </div>
                 </div>
               </div>
             </div>
             <div class="btn-row">
-              <button type="button" class="reset-btn" disabled>&#x21BA;</button>
-              <button type="submit" class="save-btn" disabled>Save</button>
+              <button type="button" class="action-btn reset-btn" disabled>&#x21BA;</button>
+              <button type="submit" class="action-btn save-btn" disabled>Save</button>
             </div>
           </div>
         </fieldset>
       </form>
 
       <p class="footer">Copyright 2025 P.Cook (alias 'plainFlight')<br><br>
-        https://github.com&#8203;/&#8203;plainFlight&#8203;/&#8203;plainFlightController is licensed under the GNU General Public License v3.0<br><br>
+        https://github.com/plainFlight 
+        plainFlightController is licensed under the GNU General Public License v3.0<br><br>
         USE AT YOUR OWN RISK & LIABILITY</p>
     </div>
     <script>
       document.querySelectorAll("fieldset").forEach(initFieldset);
+      let audioCtx = null;
+
+      function playClick() {
+        if (!audioCtx)
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(
+            800,
+            audioCtx.currentTime + 0.012
+        );
+
+        gain.gain.setValueAtTime(0.035, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(
+            0.0001,
+            audioCtx.currentTime + 0.012
+        );
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.012);
+      }
 
       function initFieldset(fieldset) {
         const saveBtn = fieldset.querySelector(".save-btn");
         const resetBtn = fieldset.querySelector(".reset-btn");
 
         resetBtn.addEventListener("click", () => {
-          if (resetBtn.disabled) return;
+          if (resetBtn.disabled) 
+            return;
+
+          playClick();
           fieldset.querySelectorAll(".input-box").forEach(i => {
             i.value = i.dataset.initial;
             i.classList.remove("changed", "invalid");
           });
+
           fieldset.querySelectorAll(".info").forEach(info => {
             info.classList.remove("visible");
           });
+
           saveBtn.disabled = true;
           saveBtn.classList.remove("active");
           resetBtn.disabled = true;
@@ -748,8 +781,12 @@ class Html
             e.preventDefault();
             return;
           }
+
+          playClick();
+          sessionStorage.setItem("scrollY", window.scrollY);
+
           fieldset.querySelectorAll(".input-box").forEach((i) => {
-            i.value = i.value.replace(",", "."); // Ensure dot as decimal separator
+            i.value = i.value.replace(",", ".");
           });
         });
 
@@ -779,14 +816,11 @@ class Html
           const minus = input.closest(".quantity").querySelector(".minus");
           const plus = input.closest(".quantity").querySelector(".plus");
           const infoBox = input.closest(".container").querySelector(".info");
-
           const initial = parseFloat(input.value);
           const min = parseValue(input.min);
           const max = parseValue(input.max);
           const step = parseValue(input.step) || 1;
-          const decimals = step.toString().includes(".")
-            ? step.toString().split(".")[1].length
-            : 0;
+          const decimals = step.toString().includes(".") ? step.toString().split(".")[1].length : 0;
 
           function updateInfoBox() {
             infoBox.textContent = `${initial} [${min} / ${max}]`;
@@ -822,29 +856,29 @@ class Html
             }
           }
 
-          minus.addEventListener("click", () => {
+          function adjust(delta) {
             const val = parseValue(input.value);
-            if (!isNaN(val) && val > min) {
-              input.value = parseValue((val - step).toFixed(decimals));
-              validate();
-              updateInfoBox();
-            }
-          });
+            if (isNaN(val))
+                return;
 
-          plus.addEventListener("click", () => {
-            const val = parseValue(input.value);
-            if (!isNaN(val) && val < max) {
-              input.value = parseValue((val + step).toFixed(decimals));
-              validate();
-              updateInfoBox();
-            }
-          });
+            playClick();            
+            const newValue = val + delta;
+            if (newValue < min || newValue > max)
+                return;
+
+            input.value = Number(newValue.toFixed(decimals));
+            validate();
+            updateInfoBox();
+          }
+
+          minus.addEventListener("click", () => adjust(-step));
+          plus.addEventListener("click", () => adjust(step));
 
           input.addEventListener("input", () => {
             input.value = input.value.replace(/[^0-9\-\.]/g, "");
             validate();
             updateInfoBox();
-          });
+          });          
           input.addEventListener("focus", updateInfoBox);
           input.addEventListener("blur", () => {
             if (input.value === "") {
@@ -894,12 +928,64 @@ class Html
         (e) => {
           const now = Date.now();
           if (now - lastTap < 300) {
-            e.preventDefault(); // block zoom on double-tap
+            e.preventDefault();
           }
           lastTap = now;
         },
         { passive: false }
       );
+
+      async function updateModelAttitude() {
+        try {
+          const response = await fetch("/MODEL");
+
+          if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+          }
+
+          const data = await response.json();
+          const pitch = document.getElementById("modelPitch");
+          const roll = document.getElementById("modelRoll");
+          const yaw = document.getElementById("modelYaw");
+          const volts = document.getElementById("batteryVolts");
+          const focused = document.activeElement;
+          const newPitch = Number(data.pitch).toFixed(1);
+          const newRoll = Number(data.roll).toFixed(1);
+          const newYaw = Number(data.yaw).toFixed(1);
+          const newVolts = Number(data.volts).toFixed(2);
+
+          if (pitch.textContent !== newPitch) {
+            pitch.textContent = newPitch;
+          }
+
+          if (roll.textContent !== newRoll) {
+            roll.textContent = newRoll;
+          }
+
+          if (yaw.textContent !== newYaw) {
+            yaw.textContent = newYaw;
+          }
+
+          if (volts.textContent !== newVolts) {
+            volts.textContent = newVolts;
+          }
+
+        } catch (error) {
+          console.error("Failed to update model attitude:", error);
+        }
+      }
+
+    window.addEventListener("load", () => {
+      const y = sessionStorage.getItem("scrollY");
+
+      if (y !== null) {
+          window.scrollTo(0, parseInt(y));
+          sessionStorage.removeItem("scrollY");
+      }
+    });
+
+    updateModelAttitude();
+    setInterval(updateModelAttitude, 500);
     </script>
   </body>
 </html>)rawliteral";

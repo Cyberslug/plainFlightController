@@ -24,16 +24,18 @@
 #pragma once
 
 #include <WiFi.h>
-#include <WiFiClient.h>
-#include <WiFiAP.h>
+#include <WebServer.h>
+#include <DNSServer.h>
 #include "Html.hpp"
 #include "FileSystem.hpp"
 #include "Config.hpp"
 
 
-//using namespace Configuration;
 
-
+/**
+* @class  WifiConfig
+* @note   Inherits Html class.
+*/
 class WifiConfig : public Html
 {
   public:
@@ -45,20 +47,6 @@ class WifiConfig : public Html
     bool hasUpdatedData();
 
   private:
-    //Delimiter data type used to determine delimiter position in received web form data.
-    struct Delimiter
-      {
-        uint32_t item[10];
-        uint32_t count;
-      };
-
-    //Data type used in decoding web form data.
-    struct StringHandler
-    {
-      Delimiter delimiter;
-      String tokens[10];
-      String message;
-    };
 
     enum class WifiState : uint32_t
     {
@@ -68,34 +56,71 @@ class WifiConfig : public Html
       SERV_CLIENT
     };
 
-    //HTML string headers received from the web application upon a web form save
-    String STR_PITCH       = "GET /PITCH?";
-    String STR_ROLL        = "GET /ROLL?";
-    String STR_YAW         = "GET /YAW?";
-    String STR_RATES       = "GET /RATES?";
-    String STR_ANGLES      = "GET /ANGLE?";
-    String STR_LEVEL_TRIMS = "GET /LEVEL_TRIMS?";
-    String STR_SERVO_TRIMS = "GET /SERVO_TRIMS?";    
-    String STR_VOLT_TRIM   = "GET /VOLT_TRIM?";
     // Set these to your desired credentials.
     static constexpr char SSID[] = "PlainFlight";
     static constexpr char PASSWORD[] = "12345678";
-    static constexpr uint32_t HTML_DOC_BUFF_SIZE = sizeof(INDEX_HTML);
+    static constexpr uint32_t HTML_VARIABLES_SIZE = 200U;
+    static constexpr uint32_t HTML_DOC_BUFF_SIZE = sizeof(INDEX_HTML) + HTML_VARIABLES_SIZE;
+    //Captive portal strings
+    static constexpr char STR_PORTAL_ROOT_1[] = "/generate_204";
+    static constexpr char STR_PORTAL_ROOT_2[] = "/hotspot-detect.html";
+    static constexpr char STR_PORTAL_ROOT_3[] = "/connecttest.txt";
+    static constexpr char STR_PORTAL_ROOT_4[] = "/ncsi.txt";
+    static constexpr char STR_PORTAL_ROOT_5[] = "/fwlink";
+    //Pages
+    static constexpr char STR_PAGE_ROOT[] = "/";
+    static constexpr char STR_PAGE_MAIN[] = "/main";
+    //Forms
+    static constexpr char STR_FORM_PITCH[] = "/PITCH";
+    static constexpr char STR_FORM_ROLL[] = "/ROLL";
+    static constexpr char STR_FORM_YAW[] = "/YAW";
+    static constexpr char STR_FORM_RATES[] = "/RATES";
+    static constexpr char STR_FORM_ANGLE[] = "/ANGLE";
+    static constexpr char STR_FORM_LEVEL_TRIMS[] = "/LEVEL_TRIMS";
+    static constexpr char STR_FORM_SERVO_TRIMS[] = "/SERVO_TRIMS";
+    static constexpr char STR_FORM_VOLT_TRIM[] = "/VOLT_TRIM";
+    //Handle live updates
+    static constexpr char STR_LIVE_UPDATE_MODEL[] = "/MODEL";
+    //Strings
+    static constexpr char STR_TEXT_PLAIN[] = "text/plain";
+    static constexpr char STR_TEXT_HTML[] = "text/html";
+    static constexpr char STR_APP_JSON[] = "application/json";
+    static constexpr char STR_LOCATION[] = "Location";
+    static constexpr char STR_ESP_MAIN_URL[] = "http://192.168.4.1/main";
+    //Received argument strings
+    static constexpr char ARG_P[] = "P";
+    static constexpr char ARG_I[] = "I";
+    static constexpr char ARG_D[] = "D";
+    static constexpr char ARG_F[] = "F";
+    static constexpr char ARG_VOLTS[] = "volts";
+    static constexpr char ARG_PITCH[] = "pitch";
+    static constexpr char ARG_ROLL[] = "roll";
+    static constexpr char ARG_YAW[] = "yaw";
+    static constexpr char ARG_SERVO1[] = "Servo1";
+    static constexpr char ARG_SERVO2[] = "Servo2";
+    static constexpr char ARG_SERVO3[] = "Servo3";
+    static constexpr char ARG_SERVO4[] = "Servo4";
 
     //Methods
-    void removeHeadTail(StringHandler* const str, uint32_t headerLength);
-    void sendHtml(WiFiClient* const theClient);
-    bool updatePidf(StringHandler* const str, PIDF::Gains* const theGains);
-    bool updateRates(StringHandler* const str);
-    bool updateLevelTrims(StringHandler* const str);
-    bool updateServoTrims(StringHandler* const str);
-    bool updateMaxAngles(StringHandler* const str);
-    bool updateBatteryTrims(StringHandler* const str);
+    void updateGains(PIDF::Gains* const theGains);
+    void sendMain();
+    void handleRoot();
+    void handleNotFound();
+    //Forms methods
+    void handlePitchGains();
+    void handleRollGains();
+    void handleYawGains();
+    void handleDegreeRates();
+    void handleMaxLevelAngles();
+    void handleLevelTrims();
+    void handleServoTrims();
+    void handleBatteryTrim();
+    //Methods for handling live updates
+    void handleModelUpdates();
 
     //Variables
     FileSystem::NonVolatileData* m_webData;
     WifiState m_state = WifiState::START;
-    String m_currentLine = "";
     char m_html[HTML_DOC_BUFF_SIZE] = {0};
     bool m_dataUpdated = false;
     float* m_batteryVoltage;
@@ -104,6 +129,6 @@ class WifiConfig : public Html
     float* m_yaw;
 
     //Objects
-    WiFiServer server = WiFiServer(80);
-    WiFiClient client;
+    DNSServer dnsServer;
+    WebServer server = WebServer(80);
 };

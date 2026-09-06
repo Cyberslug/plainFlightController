@@ -178,7 +178,7 @@ static constexpr HardwareSerial* resolveUart(SerialPort port)
   //==========================================================================
 
   // PlainFlightController firmware version string.
-  static constexpr char SOFTWARE_VERSION[]                   = "V2.x.x";
+  static constexpr char SOFTWARE_VERSION[]                   = "V3.x.dev";
 
   // USB serial baud rate and receiver UART port.
   static constexpr uint32_t USB_BAUD                         = 500000U;

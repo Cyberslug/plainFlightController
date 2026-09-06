@@ -71,6 +71,7 @@ class Configurator
     //Trims
     static constexpr  float LEVELLED_ROLL_TRIM        = 0.0f;
     static constexpr  float LEVELLED_PITCH_TRIM       = 0.0f;
+    static constexpr  float LEVELLED_YAW_TRIM         = 0.0f;
     static constexpr  int32_t SERVO_TRIM              = 0;
     //Gains
     static constexpr  int32_t PITCH_P_GAIN              = 25;
@@ -95,7 +96,7 @@ class Configurator
       {YAW_P_GAIN, YAW_I_GAIN, YAW_D_GAIN, YAW_F_GAIN}},
       {MAX_PITCH_RATE_DEGS_x100, MAX_ROLL_RATE_DEGS_x100, MAX_YAW_RATE_DEGS_x100}, 
       {MAX_PITCH_ANGLE_DEGS_x100, MAX_ROLL_ANGLE_DEGS_x100},
-      {LEVELLED_PITCH_TRIM, LEVELLED_ROLL_TRIM},
+      {LEVELLED_PITCH_TRIM, LEVELLED_ROLL_TRIM, LEVELLED_YAW_TRIM},
       {SERVO_TRIM, SERVO_TRIM, SERVO_TRIM, SERVO_TRIM},
       BATTERY_SCALER,          
       };
