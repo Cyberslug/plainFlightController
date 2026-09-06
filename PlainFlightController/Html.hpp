@@ -985,7 +985,7 @@ class Html
     });
 
     updateModelAttitude();
-    setInterval(updateModelAttitude, 1000);
+    setInterval(updateModelAttitude, 500);
     </script>
   </body>
 </html>)rawliteral";
